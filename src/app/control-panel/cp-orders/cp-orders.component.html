@@ -1,0 +1,301 @@
+<div style="margin-top: 1%">
+  <ngb-tabset #tabs>
+    <ngb-tab id="listOrder">
+      <ng-template ngbTabTitle> Ordens de pagamento cadastradas</ng-template>
+      <ng-template ngbTabContent>
+        <div class="row">
+          <h1 align="center" class="col-md-12"> Ordens de Pagamento!</h1>
+          <hr class="col-sm-10">
+          <div class="col-md-12 container">
+            <button class="btn btn-default btn-dark col-3"
+                          (click)="updateAllMoipPayments()"> Atualizar status dos pagamentos! </button>
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>
+                  ID de Pagamento
+                </th>
+                <th>
+                  Nome do Cliente
+                </th>
+                <th>
+                  Produto!
+                </th>
+                <th>
+                  Valor
+                </th>
+                <th>
+                  Data de Vencimento
+                </th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let order of orders">
+                <td>
+                  {{order.moip_id}}
+                </td>
+                <td>
+                  {{order.Customer.fullname}}
+                </td>
+                <td>
+                  {{order.item_description}}
+                </td>
+                <td>
+                  R${{ toMoney(order.item_price) }}
+                </td>
+                <td *ngIf="order.PaymentBankSlip">
+                  <p *ngIf="order.PaymentBankSlip.paid == false">{{dateChange(order.PaymentBankSlip.expirationdate, 'toHTML')}}</p>
+                  <p *ngIf="order.PaymentBankSlip.paid == true">PAGO</p>
+                </td>
+                <td *ngIf="!order.PaymentBankSlip">
+                  Não foi gerado cobraça!
+                </td>
+                <td *ngIf="!order.PaymentBankSlip">
+                  <button  class="btn btn-default btn-dark col-12"
+                          (click)="getMoipOrder(order.id, modalGetOrder)"> Detalhes / Criar pagamento!
+                  </button>
+                </td>
+                <td *ngIf="order.PaymentBankSlip">
+                  <button class="btn btn-default btn-dark col-12"
+                          (click)="getMoipOrder(order.id, modalGetOrder)"> Detalhes
+                  </button>
+                </td>
+                <td>
+                  <button class="btn btn-default btn-dark col-10"
+                          (click)="getMoipOrder(order.id,modalDeleteOrder)"> Deletar
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="formOrder">
+      <ng-template ngbTabTitle> Novas ordens!</ng-template>
+      <ng-template ngbTabContent>
+        <div class="row">
+          <h1 align="center" class="col-md-12"> Nova ordem de pagamento! </h1>
+          <hr class="col-sm-10">
+          <form class="form-inline my-2 my-lg-0" style="margin-left: auto; margin-right: auto;">
+            <input #search class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-dark my-2 my-sm-0" type="button"
+                    (click)="searchCustomers('fullname',search.value)">Pesquisar
+            </button>
+            <button style="margin-left: 10px;" class="btn btn-dark my-2 my-sm-0" type="reset"
+                    (click)="searchCustomers('', '')">Limpar
+            </button>
+          </form>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>
+                Nome do Cliente
+              </th>
+              <th>
+                CPF
+              </th>
+              <th>
+                ID de Pagamento
+              </th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody *ngIf="customersSearch.length > 0">
+            <tr *ngFor="let customer of customersSearch">
+              <td>
+                {{customer.fullname}}
+              </td>
+              <td>
+                {{customer.cpf}}
+              </td>
+              <td>
+                {{customer.moip_id}}
+              </td>
+              <td>
+                <button class="btn btn-default btn-dark col-10"
+                        (click)="getCustomerToOrder(customer.id, modalCreateOrder)"> Criar ordem de pagamento!
+                </button>
+              </td>
+            </tr>
+            </tbody>
+            <tbody *ngIf="customersSearch.length == null">
+            <h4> Nao ha clientes com o nome pesquisado! </h4>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>
+
+<!-- Modal detalhes Order -->
+<ng-template #modalGetOrder let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-order-discovery">Ordem de pagamento #{{ order.id }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form class="row">
+        <div class="form-group col-md-12">
+          <label for="moip">ID para transações MOIP</label>
+          <input align="center" class="form-control" id="moip" value="{{ order.moip_id }}" readonly>
+        </div>
+
+        <div class="form-group col-md-12" *ngIf="order.PaymentBankSlip">
+          <label for="moippay">ID para pagamento MOIP</label>
+          <input align="center" class="form-control" id="moippay" value="{{ order.PaymentBankSlip.moip_id }}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="custex">Cliente</label>
+          <input class="form-control" id="custex" value="{{ order.Customer.fullname}}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="priceex">Valor a ser pago</label>
+          <input class="form-control" id="priceex" mask="00.00" value="R${{ toMoney(order.item_price) }}" readonly>
+        </div>
+
+        <div class="form-group col-md-12">
+          <label for="item_productex">Produto</label>
+          <input class="form-control" id="item_productex" value="{{ order.item_product}}" readonly>
+        </div>
+
+        <div class="form-group col-md-12">
+          <label for="item_descriptionex">Descrição</label>
+          <input class="form-control" id="item_descriptionex" value="{{ order.item_description}}" readonly>
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="!order.PaymentBankSlip" type="button" class="btn btn-outline-dark col-6" (click)="getMoipOrder(order.id, modalCreatePayment) ;this.modal.close()">Emitir boleto do pedido</button>
+    <a *ngIf="order.PaymentBankSlip && !order.PaymentBankSlip.paid" target="_blank" href="{{order.PaymentBankSlip.bank_slip_href}}" class="btn btn-outline-dark col-6">Visualizar boleto</a>
+    <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
+  </div>
+</ng-template>
+<!-- Modal delete customer -->
+<ng-template #modalDeleteOrder let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <h4 style="display: inline;"> Tem certeza que deseja deletar o cliente? </h4>
+      <div class="jumbotron">
+        <p>
+          ID da Ordem de pagamento: <b>{{ order.moip_id }}</b>
+        </p>
+        <p>
+          Nome do cliente: <b>{{ order.Customer.fullname }}</b>
+        </p>
+        <p>
+          Tipo do produto: {{order.item_product}}
+        </p>
+        <p>
+          Descrição: {{order.item_description}}
+        </p>
+        <p>
+          Valor: R${{ toMoney(order.item_price) }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default btn-dark col-9 delete-btn"
+            (click)="deleteOrderMoip(order.id); this.modal.close()"> Tenho certeza!
+    </button>
+    <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
+  </div>
+</ng-template>
+<!-- Modal Create Order -->
+<ng-template #modalCreateOrder let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <h4 style="display: inline;"> Tem certeza que deseja deletar o cliente? </h4>
+      <div class="container">
+        <form [formGroup]="orderMoipForm" class="row">
+
+          <div class="form-group col-md-12">
+            <label for="customer"> Cliente </label>
+            <input class="form-control" id="customer" placeholder="Você precisa escolher um cliente primeiro!"
+                   value="{{customer.fullname}}" readonly>
+          </div>
+
+          <div class="form-group col-md-12">
+            <label for="item_product"> Produto </label>
+            <input class="form-control" id="item_product" placeholder="Produto..." formControlName="item_product">
+          </div>
+
+          <div class="form-group col-md-12">
+            <label for="item_description"> Descricao </label>
+            <input class="form-control" id="item_description" placeholder="Descrição..."
+                   formControlName="item_description">
+          </div>
+
+          <label for="item_price">Valor</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">R$</span>
+            </div>
+            <input id="item_price" type="text" class="form-control" formControlName="item_price"
+                   aria-label="Amount (to the nearest dollar)">
+            <div class="input-group-append">
+              <span class="input-group-text">.00</span>
+            </div>
+          </div>
+
+          <button class="btn btn-default btn-dark col-12" type="submit" (click)="addOrder(); this.modal.close()"
+                  [disabled]="!orderMoipForm.valid">Criar
+            order de pagamento!
+          </button>
+
+          <div style="height: 10px; margin: 5px;"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- Modal Create Payment -->
+<ng-template #modalCreatePayment let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <h4 style="display: inline;"> Emitir boleto! </h4>
+      <div class="container">
+        <form [formGroup]="paymentMoipForm" class="row">
+
+          <div class="form-group col-md-12">
+            <label for="expirationdate"> Data para vencimento! </label>
+            <input class="form-control" id="expirationdate" placeholder="Escolha a data para pagamento!" mask="00/00/0000" formControlName="expirationdate">
+          </div>
+
+          <button class="btn btn-default btn-dark col-12" type="button" (click)="addPayment(); this.modal.close()"
+                  [disabled]="!paymentMoipForm.valid">Criar
+            order de pagamento!
+          </button>
+
+          <div style="height: 10px; margin: 5px;"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

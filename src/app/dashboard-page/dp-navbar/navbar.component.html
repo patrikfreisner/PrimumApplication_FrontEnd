@@ -1,0 +1,47 @@
+<nav class="navbar navbar-light bg-dark fixed-top">
+  <a class="navbar-brand" routerLink="">
+    <img src={{comp_logo}} width="30" height="30" class="d-inline-block align-top" alt="">
+    <b style="color: white"> {{company}} </b>
+  </a>
+  <div class="btn-group">
+    <div class="btn-group dropleft" role="group">
+      <button type="button" class="btn btn-outline-light btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="sr-only">Toggle Dropleft</span>
+      </button>
+      <div class="dropdown-menu">
+        <!-- Dropdown menu links -->
+        <a class="dropdown-item" href="#">Atualizações</a>
+        <a class="dropdown-item" href="#">Opções</a>
+        <a class="dropdown-item" href="#">Logout</a>
+        <div class="dropdown-divider"></div>
+        <a *ngIf="current_user.role == 'admin'" class="dropdown-item" routerLink="/control">Painel de Controle</a>
+        <a *ngIf="current_user.role != 'admin'" class="dropdown-item clickable" (click)="open(aboutSystemContent)">Sobre o meu sistema?</a>
+      </div>
+    </div>
+    <button class="btn btn-sm btn-outline-light">
+      {{current_user.name}}
+    </button>
+  </div>
+</nav>
+
+<ng-template #aboutSystemContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title2"> Sobre {{system_info}} V{{system_version}} </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <h4> Olá, Estou feliz por te-lo aqui.</h4>
+      <p>
+        Atualmente você tem a versão que chamamos de {{system_info}} e está na versão de numero {{system_version}}. <br>
+
+        {{system_info_content}}
+      </p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Fechar</button>
+  </div>
+</ng-template>

@@ -1,0 +1,300 @@
+<div class="row">
+  <h1 align="center" class="col-md-8"> Clientes! </h1>
+  <div class="header-btn col-4">
+    <button class="btn btn-default btn-dark" (click)="openModal(clientContent)">Criar cliente!</button>
+  </div>
+  <hr class="col-sm-10">
+  <div class="col-md-12 container">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>
+          Nome
+        </th>
+        <th>
+          CPF
+        </th>
+        <th>
+          Data de Nascimento
+        </th>
+        <th>
+          N° Celular
+        </th>
+        <th>
+          Telefone fixo
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let cust of customers">
+        <td>
+          {{cust.name}} {{cust.lastname}}
+        </td>
+        <td>
+          {{cust.cpf | mask:'000.000.000-00'}}
+        </td>
+        <td>
+          {{cust.birthdate | mask:'00/00/0000'}}
+        </td>
+        <td>
+          {{cust.phone}}
+        </td>
+        <td>
+          {{cust.landline}}
+        </td>
+        <td>
+          <button class="btn btn-dark" (click)="getCustomerById(cust.id,detailsModal, true);"> Detalhes!</button>
+        </td>
+        <td>
+          <button class="btn btn-dark" (click)="getCustomerById(cust.id,deleteModal, false)"> Deletar cliente!</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #deleteModal let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <h4 style="display: inline;"> Tem certeza que deseja deletar o cliente? #{{ customer.id }}</h4>
+      <hr>
+      <div>
+        <form>
+          <div class="form-group col-md-6">
+            <label> Nome: </label>
+            <input class="form-control col-md-12" type="text" value="{{customer.name }} {{customer.lastname}}" readonly>
+          </div>
+          <div class="form-group col-md-6">
+            <label> CPF: </label>
+            <input class="form-control col-md-12" type="text" value="{{customer.cpf | mask:'000.000.000-00'}}" readonly>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default btn-dark col-9 delete-btn" (click)="deleteCustomer(customer.id); this.modal.close()">
+      Tenho certeza!
+    </button>
+    <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
+  </div>
+</ng-template>
+
+<ng-template #clientContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Novo cliente</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <form [formGroup]="customerForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label> Nome: </label>
+            <input
+              [class.hasError]="customerForm.get('name').invalid && customerForm.get('name').touched"
+              [class.hasSuccess]="customerForm.get('name').valid"
+              class="form-control col-md-12" type="text" formControlName="name">
+            <div *ngIf="" class="text-danger">O nome é obrigatorio!</div>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label> Sobrenome: </label>
+            <input
+              [class.hasError]="customerForm.get('lastname').invalid && customerForm.get('lastname').touched"
+              [class.hasSuccess]="customerForm.get('lastname').valid"
+              class="form-control col-md-12" type="text" formControlName="lastname">
+          </div>
+
+          <div class="form-group col-md-4">
+            <label> Nascimento: </label>
+            <input class="form-control col-md-12" mask="00/00/0000" placeholder="DD/MM/AAAA" type="text"
+                   formControlName="birthdate">
+          </div>
+
+          <div class="form-group col-md-4">
+            <label> CPF: </label>
+            <input
+              [class.hasError]="customerForm.get('cpf').invalid && customerForm.get('cpf').touched"
+              [class.hasSuccess]="customerForm.get('cpf').valid"
+              class="form-control col-md-12" mask="000.000.000-00" placeholder="000.000.000-00" type="text"
+              formControlName="cpf">
+          </div>
+
+          <div class="form-group col-md-4">
+            <label> RG: </label>
+            <input class="form-control col-md-12" type="text" formControlName="rg">
+          </div>
+
+          <div class="form-row col-md-12 jumbotron-fluid">
+            <hr>
+            <div class="form-group col-md-6">
+              <label> Celular: </label>
+              <input [class.hasError]="customerForm.get('phone').invalid && customerForm.get('phone').touched"
+                     [class.hasSuccess]="customerForm.get('phone').valid"
+                     class="form-control col-md-12" mask="(00) 00000-0000" placeholder="(00) 00000-0000" type="text"
+                     formControlName="phone">
+            </div>
+            <div class="form-group col-md-6">
+              <label> Telefone fixo: </label>
+              <input class="form-control col-md-12" mask="(00) 00000-0000" placeholder="(00) 00000-0000" type="text"
+                     formControlName="landline">
+            </div>
+          </div>
+
+          <div class="form-row col-md-12 jumbotron-fluid">
+            <div class="form-group col-md-8">
+              <label> Endereco: </label>
+              <input [class.hasError]="customerForm.get('address').invalid && customerForm.get('address').touched"
+                     [class.hasSuccess]="customerForm.get('address').valid"
+                     class="form-control col-md-12" placeholder="Rua: ..." type="text" formControlName="address">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label> Numero da Casa: </label>
+              <input class="form-control col-md-12" placeholder="Numero: ..." mask="00000" type="text"
+                     formControlName="house_number">
+            </div>
+
+            <div class="form-group col-md-5">
+              <label> Bairro: </label>
+              <input [class.hasError]="customerForm.get('district').invalid && customerForm.get('district').touched"
+                     [class.hasSuccess]="customerForm.get('district').valid"
+                     class="form-control col-md-12" placeholder="Bairro: ..." type="text" formControlName="district">
+            </div>
+
+            <div class="form-group col-md-5">
+              <label> Cidade: </label>
+              <input [class.hasError]="customerForm.get('city').invalid && customerForm.get('city').touched"
+                     [class.hasSuccess]="customerForm.get('city').valid"
+                     class="form-control col-md-12" placeholder="Cidade: ..." type="text" formControlName="city">
+            </div>
+
+            <div class="form-group col-md-2">
+              <label> UF: </label>
+              <input [class.hasError]="customerForm.get('state').invalid && customerForm.get('state').touched"
+                     [class.hasSuccess]="customerForm.get('state').valid"
+                     class="form-control col-md-12" mask="AA" placeholder="SC" type="text" formControlName="state">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" [disabled]="customerForm.invalid"
+                  (click)="addNew(); this.modal.close();">Criar cliente!
+          </button>
+          <button type="reset" class="btn btn-dark">Limpar!</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #detailsModal let-modal>
+  <div class="modal-header">
+    <h4 *ngIf="!IsEditable" class="modal-title" id="modal-details-modalDtl">Detalhes</h4>
+    <h4 *ngIf="IsEditable" class="modal-title" id="modal-details-modalUpd">Atualizar</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <form [formGroup]="customerForm">
+        <div class="form-row">
+
+          <div class="form-group col-md-6">
+            <label> Nome: </label>
+            <input class="form-control col-md-12" type="text" name="name" formControlName="name"
+                   [readonly]="!IsEditable">
+          </div>
+
+          <div class="form-group col-md-6">
+            <label> Sobrenome: </label>
+            <input class="form-control col-md-12" type="text" formControlName="lastname" [readonly]="!IsEditable">
+          </div>
+
+          <div class="form-group col-md-4">
+            <label> Nascimento: </label>
+            <input class="form-control col-md-12" mask="00/00/0000" placeholder="DD/MM/AAAA" type="text"
+                   formControlName="birthdate" [readonly]="!IsEditable">
+          </div>
+
+          <div class="form-group col-md-4">
+            <label> CPF: </label>
+            <input class="form-control col-md-12" mask="000.000.000-00" placeholder="000.000.000-00" type="text"
+                   formControlName="cpf" [readonly]="!IsEditable">
+          </div>
+
+          <div class="form-group col-md-4">
+            <label> RG: </label>
+            <input class="form-control col-md-12" type="text" formControlName="rg" [readonly]="!IsEditable">
+          </div>
+
+          <div class="form-row col-md-12 jumbotron-fluid">
+            <hr>
+            <div class="form-group col-md-6">
+              <label> Celular: </label>
+              <input class="form-control col-md-12" mask="(00) 00000-0000" placeholder="(00) 00000-0000" type="text"
+                     formControlName="phone" [readonly]="!IsEditable">
+            </div>
+            <div class="form-group col-md-6">
+              <label> Telefone fixo: </label>
+              <input class="form-control col-md-12" mask="(00) 00000-0000" placeholder="(00) 00000-0000" type="text"
+                     formControlName="landline" [readonly]="!IsEditable">
+            </div>
+          </div>
+
+          <div class="form-row col-md-12 jumbotron-fluid">
+            <div class="form-group col-md-8">
+              <label> Endereco: </label>
+              <input class="form-control col-md-12" placeholder="Rua: ..." type="text" formControlName="address"
+                     [readonly]="!IsEditable">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label> Numero da Casa: </label>
+              <input class="form-control col-md-12" placeholder="Numero: ..." mask="00000" type="text"
+                     formControlName="house_number" [readonly]="!IsEditable">
+            </div>
+
+            <div class="form-group col-md-5">
+              <label> Bairro: </label>
+              <input class="form-control col-md-12" placeholder="Bairro: ..." type="text" formControlName="district"
+                     [readonly]="!IsEditable">
+            </div>
+
+            <div class="form-group col-md-5">
+              <label> Cidade: </label>
+              <input class="form-control col-md-12" placeholder="Cidade: ..." type="text" formControlName="city"
+                     [readonly]="!IsEditable">
+            </div>
+
+            <div class="form-group col-md-2">
+              <label> UF: </label>
+              <input class="form-control col-md-12" mask="AA" placeholder="SC" type="text" formControlName="state"
+                     [readonly]="!IsEditable">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"
+                  (click)="this.IsEditable = true;">Editar cliente?
+          </button>
+          <button *ngIf="IsEditable === true" [disabled]="customerForm.untouched" type="button"
+                  class="btn btn-outline-dark" (click)="updateCustomer(); this.modal.close();">
+            Atualizar cliente!
+          </button>
+          <button *ngIf="IsEditable === true" type="reset" class="btn btn-outline-dark">Limpar!</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

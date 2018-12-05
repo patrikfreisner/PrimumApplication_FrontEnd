@@ -1,0 +1,11 @@
+.btnPesquisar, .btnMaisBotoes{
+	position: fixed;
+	float: bottom;
+	bottom: 15px;
+	right: 15px;
+	z-index: 100;
+}
+
+.jumbotron-fluid {
+  background: grey;
+}

@@ -1,0 +1,303 @@
+<div style="margin-top: 1%">
+  <ngb-tabset #tabs>
+    <ngb-tab id="listCustomer">
+      <ng-template ngbTabTitle> Clientes Cadastrados</ng-template>
+      <ng-template ngbTabContent>
+        <div class="row">
+          <h1 align="center" class="col-md-12"> Clientes ativos! </h1>
+          <hr class="col-sm-10">
+          <div class="col-md-12 container">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>
+                  Nome completo
+                </th>
+                <th>
+                  Email
+                </th>
+                <th>
+                  Nascimento
+                </th>
+                <th>
+                  CPF
+                </th>
+                <th>
+                  ID de Pagamento
+                </th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let cust of customers">
+                <td>
+                  {{cust.fullname}}
+                </td>
+                <td>
+                  {{cust.email}}
+                </td>
+                <td>
+                  {{ dateChange(cust.birthdate, 'toHTML') }}
+                </td>
+                <td>
+                  {{cust.cpf | mask:'000.000.000-00'}}
+                </td>
+                <td>
+                  {{cust.moip_id}}
+                </td>
+                <td>
+                  <button *ngIf="!cust.moip_id" class="btn btn-default btn-dark col-12"
+                          (click)="getMoipCustomer(cust.id, modalGetCustomer)"> Detalhes / Criar ID MoiP
+                  </button>
+                  <button *ngIf="cust.moip_id" class="btn btn-default btn-dark col-12"
+                          (click)="getMoipCustomer(cust.id, modalGetCustomer)"> Detalhes
+                  </button>
+                </td>
+                <td>
+                  <button class="btn btn-default btn-dark col-10"
+                          (click)="getMoipCustomer(cust.id,modalDeleteCustomer)"> Deletar
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="formCustomer">
+      <ng-template ngbTabTitle> Novos Clientes!</ng-template>
+      <ng-template ngbTabContent>
+        <div class="row">
+          <h1 align="center" class="col-md-12"> Novo cliente! </h1>
+          <hr class="col-sm-10">
+          <div id="scrollnone" class="col-sm-4 container" [style]="{'max-height':screen }">
+            <form [formGroup]="customerMoipForm" (ngSubmit)="addNew()" class="row">
+              <div class="form-group col-md-12">
+                <label for="fullname">Nome completo</label>
+                <input class="form-control" id="fullname" placeholder="Patrik Fernand..." formControlName="fullname">
+              </div>
+
+              <div class="form-group col-md-12">
+                <label for="email">Email</label>
+                <input class="form-control" id="email" placeholder="seunome@email.com" formControlName="email">
+              </div>
+
+              <div class="form-group col-sm-3">
+                <label for="phonecode">DDD</label>
+                <input class="form-control" id="phonecode" placeholder="(47)" mask="(00)" formControlName="phonecode">
+              </div>
+
+              <div class="form-group col-sm-5">
+                <label for="phonenumber">Numero telefone</label>
+                <input class="form-control" id="phonenumber" placeholder="90000-0000" mask="00000-0000"
+                       formControlName="phonenumber">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="birthdate"> Nascimento </label>
+                <input class="form-control" id="birthdate" placeholder="00/00/0000" mask="00/00/0000"
+                       formControlName="birthdate">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="cpf">CPF</label>
+                <input class="form-control" id="cpf" placeholder="000.000.000-00" mask="000.000.000-00"
+                       formControlName="cpf">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="rg">RG</label>
+                <input class="form-control" id="rg" formControlName="rg">
+              </div>
+
+              <div class="form-group col-md-3">
+                <label for="streetnumber">N* Casa</label>
+                <input class="form-control" id="streetnumber" placeholder="0000" formControlName="streetnumber">
+              </div>
+
+              <div class="form-group col-md-9">
+                <label for="street">Nome da rua</label>
+                <input class="form-control" id="street" placeholder="Rua tal..." formControlName="street">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="zipcode">CEP</label>
+                <input class="form-control" id="zipcode" placeholder="89260-000" formControlName="zipcode">
+              </div>
+
+              <div class="form-group col-md-3">
+                <label for="state">Estado</label>
+                <input class="form-control" id="state" placeholder="SC, RS, PR..." formControlName="state">
+              </div>
+
+              <div class="form-group col-md-3">
+                <label for="country">Pais</label>
+                <input class="form-control" id="country" placeholder="Brasil" formControlName="country">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="district">Bairro</label>
+                <input class="form-control" id="district" formControlName="district">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="city">Cidade</label>
+                <input class="form-control" id="city" formControlName="city">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="complement">Complemento</label>
+                <input class="form-control" id="complement" formControlName="complement">
+              </div>
+
+              <button class="btn btn-default btn-dark col-12" type="submit" [disabled]="!customerMoipForm.valid">Criar
+                cliente!
+              </button>
+              <div style="height: 10px; margin: 5px;"></div>
+            </form>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>
+
+<!-- Modal detalhes customer -->
+
+<ng-template #modalGetCustomer let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-order-discovery">Cliente de numero #{{ customer.id }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <form class="row">
+        <div class="form-group col-md-12">
+          <label for="fullname">ID para transações MOIP</label>
+          <input align="center" class="form-control" id="moip_idEx" value="{{ customer.moip_id }}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="fullname">Nome completo</label>
+          <input class="form-control" id="fullnameEx" value="{{ customer.fullname}}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="email">Email</label>
+          <input class="form-control" id="emailEx" value="{{ customer.email}}" readonly>
+        </div>
+
+        <div class="form-group col-sm-3">
+          <label for="phonecode">DDD</label>
+          <input class="form-control" id="phonecodeEx" mask="(00)" value="{{ customer.phonecode}}" readonly>
+        </div>
+
+        <div class="form-group col-sm-5">
+          <label for="phonenumber">Numero telefone</label>
+          <input class="form-control" id="phonenumberEx" mask="00000-0000"
+                 value="{{ customer.phonenumber}}" readonly>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="birthdate"> Nascimento </label>
+          <input class="form-control" id="birthdateEx" mask="00/00/0000"
+                 value="{{ customer.birthdate}}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="cpf">CPF</label>
+          <input class="form-control" id="cpfEx" mask="000.000.000-00"
+                 value="{{ customer.cpf}}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="rg">RG</label>
+          <input class="form-control" id="rgEx" value="{{ customer.rg}}" readonly>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label for="streetnumber">N* Casa</label>
+          <input class="form-control" id="streetnumberEx" value="{{ customer.streetnumber}}" readonly>
+        </div>
+
+        <div class="form-group col-md-9">
+          <label for="street">Nome da rua</label>
+          <input class="form-control" id="streetEx" value="{{ customer.street}}" readonly>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="zipcode">CEP</label>
+          <input class="form-control" id="zipcodeEx" value="{{ customer.zipcode}}" readonly>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label for="state">Estado</label>
+          <input class="form-control" id="stateEx" value="{{ customer.state}}" readonly>
+        </div>
+
+        <div class="form-group col-md-3">
+          <label for="country">Pais</label>
+          <input class="form-control" id="countryEx" value="{{ customer.country}}" readonly>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="district">Bairro</label>
+          <input class="form-control" id="districtEx" value="{{ customer.district}}" readonly>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="city">Cidade</label>
+          <input class="form-control" id="cityEx" value="{{ customer.city }}" readonly>
+        </div>
+
+        <div class="form-group col-md-4">
+          <label for="complement">Complemento</label>
+          <input class="form-control" id="complementEx" value="{{ customer.complement}}" readonly>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="customer.moip_id == 'Não foi criado MoipID'" class="btn btn-default btn-dark col-9"
+            (click)="createMoipID(customer.id)"> Criar ID MoiP
+    </button>
+    <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
+  </div>
+</ng-template>
+<!-- Modal delete customer -->
+<ng-template #modalDeleteCustomer let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <h4 style="display: inline;"> Tem certeza que deseja deletar o cliente? </h4>
+      <div class="jumbotron">
+        <p>
+          ID do Cliente: <b>{{ customer.moip_id }}</b>
+        </p>
+        <p>
+          Nome do cliente: <b>{{ customer.fullname }}</b>
+        </p>
+        <p>
+          Email do cliente: {{customer.email}}
+        </p>
+        <p>
+          CPF do cliente: {{customer.cpf}}
+        </p>
+        <p>
+          RG do cliente: {{customer.rg}}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default btn-dark col-9 delete-btn" (click)="deleteCustomerMoip(customer.id); this.modal.close()"> Tenho certeza!</button>
+    <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
+  </div>
+</ng-template>

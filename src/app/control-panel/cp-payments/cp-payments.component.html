@@ -1,0 +1,112 @@
+<div style="margin-top: 1%">
+  <ngb-tabset #tabs>
+    <ngb-tab id="listOrder">
+      <ng-template ngbTabTitle> Pagamentos do mês! </ng-template>
+      <ng-template ngbTabContent>
+        <div class="row">
+          <h1 align="center" class="col-md-12"> Pagamentos do mês! </h1>
+          <hr class="col-sm-10">
+          <div class="col-md-12 container">
+            <button class="btn btn-default btn-dark col-3"
+                          (click)="updateAllMoipPayments()"> Atualizar status dos pagamentos! </button>
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>
+                  ID de Pagamento
+                </th>
+                <th>
+                  Nome do Cliente
+                </th>
+                <th>
+                  Produto!
+                </th>
+                <th>
+                  Valor
+                </th>
+                <th>
+                  Data de Vencimento
+                </th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let pay of payments">
+                <td>
+                  {{pay.moip_id}}
+                </td>
+                <td>
+                  {{pay.Order.Customer.fullname}}
+                </td>
+                <td>
+                  {{pay.Order.item_product}}
+                </td>
+                <td>
+                  R${{ toMoney(pay.Order.item_price) }}
+                </td>
+                <td>
+                  {{dateChange(pay.expirationdate,'toHTML')}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="formOrder">
+      <ng-template ngbTabTitle> Pagamentos atrasados! </ng-template>
+      <ng-template ngbTabContent>
+        <div class="row">
+          <h1 align="center" class="col-md-12"> Pagamentos em atraso! </h1>
+          <hr class="col-sm-10">
+          <div class="col-md-12 container">
+            <button class="btn btn-default btn-dark col-3"
+                          (click)="updateAllMoipPayments()"> Atualizar status dos pagamentos! </button>
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>
+                  ID de Pagamento
+                </th>
+                <th>
+                  Nome do Cliente
+                </th>
+                <th>
+                  Produto!
+                </th>
+                <th>
+                  Valor
+                </th>
+                <th>
+                  Data de Vencimento
+                </th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let pay of payment_expired">
+                <td>
+                  {{pay.moip_id}}
+                </td>
+                <td>
+                  {{pay.Order.Customer.fullname}}
+                </td>
+                <td>
+                  {{pay.Order.item_product}}
+                </td>
+                <td>
+                  R${{ toMoney(pay.Order.item_price) }}
+                </td>
+                <td>
+                  {{dateChange(pay.expirationdate,'toHTML')}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>
+</div>

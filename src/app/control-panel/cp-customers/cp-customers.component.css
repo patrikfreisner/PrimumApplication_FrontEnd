@@ -1,0 +1,9 @@
+.delete-btn:hover {
+  background-color: red;
+  border-color: red;
+}
+
+#scrollnone {
+  overflow-y: scroll;
+  max-height: 500px;
+}
