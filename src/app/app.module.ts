@@ -16,7 +16,7 @@ import {CpOrdersComponent} from './control-panel/cp-orders/cp-orders.component';
 import {CpPaymentsComponent} from './control-panel/cp-payments/cp-payments.component';
 import {CpCustomersComponent} from './control-panel/cp-customers/cp-customers.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HelpersModule} from './Helpers/helpers.module';
+import {HelpersModule} from './helpers/helpers.module';
 import { CustomersComponent } from './dashboard-page/dp-customers/customers.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { ServiceOrdersComponent } from './dashboard-page/dp-service-orders/service-orders.component';

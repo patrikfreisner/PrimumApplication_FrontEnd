@@ -16,7 +16,7 @@ export class MoipCustomerService {
     })
   };
 
-  apiMoipServiceUrl = 'http://localhost:3000/api/dp-customers';
+  apiMoipServiceUrl = 'http://localhost:3000/api/customers';
 
   constructor(private http: HttpClient) {
   }

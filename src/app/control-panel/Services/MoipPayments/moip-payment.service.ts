@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {PaymentBankSlip} from '../../Models/paymentBankSlip';
-import {HelpersModule} from '../../../Helpers/helpers.module';
+import {HelpersModule} from '../../../helpers/helpers.module';
 
 @Injectable({
   providedIn: 'root'

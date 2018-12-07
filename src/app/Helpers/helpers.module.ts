@@ -37,7 +37,7 @@ export class HelpersModule {
     }
   }
 
-  private toMoney(number: number): string {
+  public toMoney(number: number): string {
     let valor: string;
     let th: string;
     let th2: string;

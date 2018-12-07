@@ -67,11 +67,11 @@
     </ngb-tab>
     <ngb-tab id="formCustomer">
       <ng-template ngbTabTitle> Novos Clientes!</ng-template>
-      <ng-template ngbTabContent>
+      <ng-template #scrollnone ngbTabContent>
         <div class="row">
           <h1 align="center" class="col-md-12"> Novo cliente! </h1>
           <hr class="col-sm-10">
-          <div id="scrollnone" class="col-sm-4 container" [style]="{'max-height':screen }">
+          <div class="col-sm-4 container" [style]="{'max-height':screen }">
             <form [formGroup]="customerMoipForm" (ngSubmit)="addNew()" class="row">
               <div class="form-group col-md-12">
                 <label for="fullname">Nome completo</label>
@@ -297,7 +297,10 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-default btn-dark col-9 delete-btn" (click)="deleteCustomerMoip(customer.id); this.modal.close()"> Tenho certeza!</button>
+    <button class="btn btn-default btn-dark col-9 delete-btn"
+            (click)="deleteCustomerMoip(customer.id); this.modal.close()"> Tenho certeza!
+    </button>
     <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
   </div>
 </ng-template>
+

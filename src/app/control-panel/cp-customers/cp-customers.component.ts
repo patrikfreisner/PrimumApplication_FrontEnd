@@ -4,7 +4,8 @@ import {Customer} from '../Models/customer.model';
 import {MoipCustomerService} from '../Services/MoipCustomer/moip-customer.service';
 import {Router} from '@angular/router';
 import * as $ from 'jquery';
-import {NgbModal, NgbTabset} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal, NgbTabContent, NgbTabset} from '@ng-bootstrap/ng-bootstrap';
+import {HelpersModule} from '../../helpers/helpers.module';
 
 @Component({
   selector: 'app-cp-customers',
@@ -15,26 +16,34 @@ export class CpCustomersComponent implements OnInit {
   customer: Customer;
   customers: Array<Customer>;
   customerMoipForm: FormGroup;
-  firstD: string;
-  month: string;
-  year: string;
 
   @ViewChild('tabs')
   private tabs: NgbTabset;
+
+  @ViewChild('scrollnone')
+  private scroll: NgbTabContent;
 
   constructor(
     private customerService: MoipCustomerService,
     private fb: FormBuilder,
     private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private helperModule: HelpersModule
   ) {
 
     this.getMoipCustomers();
     this.formCustomerMoipbuilder();
 
   }
+
   ngOnInit() {
-    const screen = ($(window).height() - ($(window).height() * 0.31));
+    $(document).ready(function () {
+      const screen = $(window).height() - ($(window).height() * 0.40);
+      this.scroll.height(screen + 'px');
+      $(window).resize(function () {
+        $('#scrollnone').height($(window).height() - ($(window).height() * 0.31) + 'px');
+      });
+    });
   }
 
 
@@ -117,21 +126,6 @@ export class CpCustomersComponent implements OnInit {
   }
 
   private dateChange(data: string, type: string): string {
-
-    if (type === 'toHTML') {
-      this.year = data.slice(0, 4);
-      this.month = data.slice(5, 7);
-      this.firstD = data.slice(8, 10);
-      data = this.firstD + '/' + this.month + '/' + this.year;
-      return data;
-
-    } else if (type === 'toDB') {
-      this.firstD = data.slice(0, 2);
-      this.month = data.slice(2, 4);
-      this.year = data.slice(4, 8);
-      data = this.year + '-' + this.month + '-' + this.firstD;
-      return data;
-
-    }
+    return this.helperModule.dateChange(data, type);
   }
 }

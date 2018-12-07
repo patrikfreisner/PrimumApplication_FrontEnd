@@ -3,7 +3,7 @@
   border-color: red;
 }
 
-#scrollnone {
-  overflow-y: scroll;
-  max-height: 500px;
-}
+/*#scrollnone {*/
+  /*overflow-y: scroll;*/
+  /*max-height: 500px;*/
+/*}*/

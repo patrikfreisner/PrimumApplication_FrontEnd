@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {MoipPaymentService} from '../Services/MoipPayments/moip-payment.service';
 import {PaymentBankSlip} from '../Models/paymentBankSlip';
+import {HelpersModule} from '../../helpers/helpers.module';
 
 
 @Component({
@@ -26,10 +27,6 @@ export class CpOrdersComponent implements OnInit {
   orderMoipForm: FormGroup;
   paymentMoipForm: FormGroup;
 
-  firstD: string;
-  month: string;
-  year: string;
-
   @ViewChild('tabs')
   private tabs: NgbTabset;
 
@@ -43,7 +40,8 @@ export class CpOrdersComponent implements OnInit {
     private searchService: SearchService,
     private fb: FormBuilder,
     private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private helperModule: HelpersModule
   ) {
     this.getMoipOrders();
     this.formOrderMoipBuilder();
@@ -144,48 +142,11 @@ export class CpOrdersComponent implements OnInit {
   }
 
   private toMoney(number: number): string {
-    let valor: string;
-    let th: string;
-    let th2: string;
-    let rest: string;
-
-    valor = number.toString();
-
-    if (valor.length === 4) {
-      th = valor.slice(0, 2);
-      rest = valor.slice(2, 4);
-      valor = th + ',' + rest;
-    } else if (valor.length === 5) {
-      th = valor.slice(0, 3);
-      rest = valor.slice(3, 5);
-      valor = th + ',' + rest;
-    } else if (valor.length === 6) {
-      th = valor.slice(0, 1);
-      th2 = valor.slice(1, 4);
-      rest = valor.slice(4, 6);
-      valor = th + '.' + th2 + ',' + rest;
-    }
-
-    return valor;
+    return this.helperModule.toMoney(number);
   }
 
   private dateChange(data: string, type: string): string {
-
-    if (type === 'toHTML') {
-      this.year = data.slice(0, 4);
-      this.month = data.slice(5, 7);
-      this.firstD = data.slice(8, 10);
-      data = this.firstD + '/' + this.month + '/' + this.year;
-      return data;
-
-    } else if (type === 'toDB') {
-      this.firstD = data.slice(0, 2);
-      this.month = data.slice(2, 4);
-      this.year = data.slice(4, 8);
-      data = this.year + '-' + this.month + '-' + this.firstD;
-      return data;
-
-    }
+    return this.helperModule.dateChange(data, type);
   }
 
   private formOrderMoipBuilder(): void {
