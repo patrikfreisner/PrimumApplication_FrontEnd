@@ -3,6 +3,9 @@ import {Clientserviceorder} from '../Models/clientserviceorder';
 import {ClientserviceorderService} from '../Services/ModelServices/clientserviceorder.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {SearchService} from '../Services/SearchManager/search.service';
+import {Clientcust} from '../Models/clientcust.model';
+import {ClientcustService} from '../Services/ModelServices/clientcust.service';
 
 @Component({
   selector: 'app-service-orders',
@@ -10,7 +13,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
   styleUrls: ['./service-orders.component.css']
 })
 export class ServiceOrdersComponent implements OnInit {
-
+  page: number;
+  clientcusts: Clientcust[];
+  clientcust: Clientcust;
   service_order: Clientserviceorder;
   serviceorders: Clientserviceorder[];
   soForm: FormGroup;
@@ -18,24 +23,74 @@ export class ServiceOrdersComponent implements OnInit {
 
   constructor(
     public soService: ClientserviceorderService,
+    public searchService: SearchService,
+    public customerService: ClientcustService,
     private modalService: NgbModal,
     private fb: FormBuilder
   ) {
+    this.getServiceOrders(1);
     this.formServiceOrderBuilder();
+    this.getClientCustBySearch('');
+    this.page = 1;
   }
 
   ngOnInit() {
+  }
+
+  private pageNext(): void {
+    this.page += 1;
+    this.getServiceOrders(this.page);
+    if (this.serviceorders.length === 0) {
+      this.page -= 1;
+    }
+  }
+
+  private pageBack(): void {
+    if (this.page > 1) {
+      this.page -= 1;
+      this.getServiceOrders(this.page);
+    }
   }
 
   public openModal(content, size): void {
     this.soForm = null;
     this.formServiceOrderBuilder();
     this.modalService.open(content, {size: size});
+    this.getClientCustBySearch('');
   }
 
-  public getServiceOrder(): void {
-    this.soService.getServiceOrder().subscribe(
+  public getServiceOrders(page): void {
+    this.soService.getServiceOrder(page).subscribe(
       (service_order) => this.serviceorders = service_order
+    );
+  }
+
+  public getClientCustBySearch(object: string): void {
+    this.searchService.getClientcustBySearch('name', object).subscribe(
+      (clientcust) => {
+        this.clientcusts = clientcust;
+      }
+    );
+  }
+
+  private getCustomerById(id: number, content, setToForm): Clientcust {
+    this.IsEditable = false;
+    if (content != null) {
+      this.modalService.open(content);
+    }
+    this.customerService.getCustomerById(id).subscribe(
+      (clientcust) => {
+        this.clientcust = clientcust;
+      },
+      () => alert('error')
+    );
+    return this.clientcust;
+  }
+
+  public getSOBySearch(id: number): void {
+    this.searchService.getServiceOrderBySearch('id', id.toString()).subscribe(
+      (so) => this.serviceorders = so,
+      () => alert('Error!')
     );
   }
 
@@ -57,11 +112,14 @@ export class ServiceOrdersComponent implements OnInit {
 
   private addNew(): void {
     this.service_order = this.soForm.value;
+    this.service_order.Clientcust_id = this.clientcust.id;
+    this.service_order.order_init_date = new Date().toLocaleDateString('latn');
+    this.service_order.status = 'Em aberto';
 
     this.soService.createServiceOrder(this.service_order)
       .subscribe(
         () => {
-          this.getServiceOrder();
+          this.getServiceOrders(1);
         },
         () => alert('ocorreu um erro!')
       );
@@ -72,7 +130,7 @@ export class ServiceOrdersComponent implements OnInit {
 
     this.soService.updateServiceOrder(this.service_order)
       .subscribe(
-        () => this.getServiceOrder(),
+        () => this.getServiceOrders(1),
         () => alert('Ocorreu um erro!')
       );
   }
@@ -80,7 +138,7 @@ export class ServiceOrdersComponent implements OnInit {
   private deleteServiceOrder(id): void {
     this.soService.deleteServiceOrder(id).subscribe(
       () => {
-        this.getServiceOrder();
+        this.getServiceOrders(1);
         this.service_order = null;
       }
     );
@@ -89,7 +147,7 @@ export class ServiceOrdersComponent implements OnInit {
   private formServiceOrderBuilder(): void {
     this.soForm = this.fb.group({
       id: '',
-      type: ['', Validators.required],
+      devicetype: ['', Validators.required],
       brand: ['', Validators.required],
       model: ['', Validators.required],
       accessories: [''],
@@ -102,8 +160,7 @@ export class ServiceOrdersComponent implements OnInit {
       comments: [''],
       advance_payment: [''],
       advance_payment_value: [''],
-      created_at: [''],
-      updated_at: [''],
+      status: ['']
     });
   }
 

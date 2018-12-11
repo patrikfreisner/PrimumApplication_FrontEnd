@@ -1,44 +1,86 @@
 <div class="row">
   <h1 align="center" class="col-md-8"> Ordens de Serviço! </h1>
-  <div class="header-btn col-4">
-    <button class="btn btn-default btn-dark" (click)="openModal(osContent, 'lg')">Criar Ordem de Serviço!</button>
-  </div>
   <hr class="col-sm-10">
+  <div class="header-btn col-7">
+    <button class="btn btn-default btn-dark" (click)="openModal(chooseCustomer, 'lg')">Criar Ordem de Serviço!</button>
+  </div>
+  <div class="input-group mb-3 col-5">
+    <div class="input-group-prepend">
+      <span class="input-group-text" style="padding-right: 1px;">#OS</span>
+    </div>
+    <input type="text" class="form-control" placeholder="Pesquise a ID da S.O!" #searchClientso>
+    <div class="input-group-append">
+      <button class="btn btn-default btn-outline-dark" type="button"
+              (click)="getSOBySearch(searchClientso.value)">Pesquisar!
+      </button>
+      <button class="btn btn-default btn-outline-dark" type="reset" (click)="getServiceOrders();">Limpar!
+      </button>
+    </div>
+  </div>
   <div class="col-md-12 container">
-    <table class="table table-striped">
+    <table class="table table-striped" style="margin-bottom: 53px">
       <thead>
       <tr>
         <th>
-          Nome
+          ID
         </th>
         <th>
-          CPF
+          Cliente
         </th>
         <th>
-          Data de Nascimento
+          Tipo do Aparelho
         </th>
         <th>
-          N° Celular
+          Modelo
         </th>
         <th>
-          Telefone fixo
+          Data de entrada
+        </th>
+        <th>
+          Status
         </th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let so of serviceorders">
         <td>
-          {{so}}
+          #OS{{so.id}}
         </td>
         <td>
-          <button class="btn btn-dark" (click)="getSObyId(so.id,detailsModal, true);"> Detalhes!</button>
+          {{so.Clientcust.name}} {{so.Clientcust.lastname}}
         </td>
         <td>
-          <button class="btn btn-dark" (click)="getSObyId(so.id,deleteModal, false)"> Deletar cliente!</button>
+          {{so.devicetype}}
+        </td>
+        <td>
+          {{so.model}}
+        </td>
+        <td>
+          {{so.order_init_date}}
+        </td>
+        <td>
+          <b>{{so.status}}</b>
+        </td>
+        <td>
+          <button class="btn btn-dark"
+                  (click)="getCustomerById(so.Clientcust.id,null);getSObyId(so.id,null, true);openModal(detailsModal, 'lg')">
+            Detalhes!
+          </button>
+        </td>
+        <td>
+          <button class="btn btn-dark" (click)="getSObyId(so.id,deleteModal, false)"> Deletar S.O!</button>
         </td>
       </tr>
       </tbody>
     </table>
+    <nav class="navbar fixed-bottom navbar-light bg-light" style="left: 16.5%">
+      <button style="margin-bottom: 5px;" class="col-3 btn btn-dark" (click)="pageBack()"> Volta pagina! ({{page-1}})
+      </button>
+      <div class="col-6"></div>
+      <button style="margin-bottom: 5px;" class="col-3 btn btn-dark" (click)="pageNext()"> Proxima pagina!
+        ({{page+1}})
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -50,24 +92,42 @@
   </div>
   <div class="modal-body">
     <div class="container">
-      <h4 style="display: inline;"> Tem certeza que deseja deletar a Ordem de Serviço? #{{ service_order.id }}</h4>
+      <h4 style="display: inline;"> Tem certeza que deseja deletar a Ordem de Serviço? #OS{{ service_order.id }}</h4>
       <hr>
       <div>
-        <form>
+        <form class="row">
           <div class="form-group col-md-6">
             <label> Nome: </label>
-            <input class="form-control col-md-12" type="text" value="{{customer.name }} {{customer.lastname}}" readonly>
+            <input class="form-control col-md-12" type="text"
+                   value="{{ service_order.Clientcust.name }} {{service_order.Clientcust.lastname}}" readonly>
           </div>
           <div class="form-group col-md-6">
             <label> CPF: </label>
-            <input class="form-control col-md-12" type="text" value="{{customer.cpf | mask:'000.000.000-00'}}" readonly>
+            <input class="form-control col-md-12" type="text"
+                   value="{{service_order.Clientcust.cpf | mask:'000.000.000-00'}}" readonly>
+          </div>
+          <div class="form-group col-md-6">
+            <label> Tipo do aparelho: </label>
+            <input class="form-control col-md-12" type="text"
+                   value="{{service_order.devicetype }}" readonly>
+          </div>
+          <div class="form-group col-md-6">
+            <label> Modelo: </label>
+            <input class="form-control col-md-12" type="text"
+                   value="{{service_order.model }}" readonly>
+          </div>
+          <div class="form-group col-md-12">
+            <label> Defeito relatado: </label>
+            <input class="form-control col-md-12" type="text"
+                   value="{{service_order.reported_defect }}" readonly>
           </div>
         </form>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-default btn-dark col-9 delete-btn" (click)="deleteServiceOrder(service_order.id); this.modal.close()">
+    <button class="btn btn-default btn-dark col-9 delete-btn"
+            (click)="deleteServiceOrder(service_order.id); this.modal.close()">
       Tenho certeza!
     </button>
     <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
@@ -114,66 +174,75 @@
   </div>
   <div class="modal-body">
     <div class="container-fluid">
-      <form>
-        <fieldset class="form-jumb-container" disabled>
-          <h1 align="center"> Informações do Cliente </h1>
-          <hr>
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label> Nome completo: </label>
-              <input class="form-control col-md-12" placeholder="Patrik Fernando Reisner" type="text" required>
-            </div>
-
-            <div class="form-group col-md-6">
-              <label> CPF: </label>
-              <input class="form-control col-md-12" mask="000.000.000-00" placeholder="000.000.000-00" type="text">
-            </div>
-
-            <div class="form-group col-md-6">
-              <label> Celular: </label>
-              <input class="form-control col-md-12" mask="(00) 00000-0000" placeholder="(00) 00000-0000" type="text">
-            </div>
-
-            <div class="form-group col-md-7">
-              <label> Endereco completo + N° Casa: </label>
-              <input class="form-control col-md-12" placeholder="Rua: Maria Madalena Lopes Santana, Nº XXXX"
-                     type="text">
-            </div>
-
-            <div class="form-group col-md-5">
-              <label> Bairro: </label>
-              <input class="form-control col-md-12" placeholder="Nereu Ramos, Jaragua do Sul - SC" type="text">
-            </div>
-
+      <fieldset class="form-jumb-container" disabled>
+        <h1 align="center"> Informações do Cliente </h1>
+        <hr>
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <label> Nome completo: </label>
+            <input class="form-control col-md-12" value="{{clientcust.name}} {{clientcust.lastname}}" type="text"
+                   required>
           </div>
-        </fieldset>
+
+          <div class="form-group col-md-6">
+            <label> CPF: </label>
+            <input class="form-control col-md-12" value="{{clientcust.cpf | mask: '000.000.000-00'}}" type="text">
+          </div>
+
+          <div class="form-group col-md-6">
+            <label> Celular: </label>
+            <input class="form-control col-md-12" value="{{clientcust.phone | mask: '(00) 00000-0000'}}" type="text">
+          </div>
+
+          <div class="form-group col-md-7">
+            <label> Endereco completo + N° Casa: </label>
+            <input class="form-control col-md-12" value="{{clientcust.address}} N° {{clientcust.house_number}}"
+                   type="text">
+          </div>
+
+          <div class="form-group col-md-5">
+            <label> Bairro e Cidade: </label>
+            <input class="form-control col-md-12"
+                   value="{{clientcust.district}}, {{clientcust.city}} - {{clientcust.state}}"
+                   placeholder="Nereu Ramos, Jaragua do Sul - SC" type="text">
+          </div>
+
+        </div>
+      </fieldset>
+      <form [formGroup]="soForm">
         <h1 align="center"> Informações do Dispositivo </h1>
         <hr>
         <div class="form-row">
 
           <div class="form-group col-md-6">
             <label> Tipo do aparelho: </label>
-            <input class="form-control col-md-12" type="text" required>
+            <input [class.hasError]="soForm.get('devicetype').invalid && soForm.get('devicetype').touched"
+                   [class.hasSuccess]="soForm.get('devicetype').valid"
+                   class="form-control col-md-12" type="text" formControlName="devicetype">
           </div>
 
           <div class="form-group col-md-6">
             <label> Marca: </label>
-            <input class="form-control col-md-12" type="text">
+            <input [class.hasError]="soForm.get('brand').invalid && soForm.get('brand').touched"
+                   [class.hasSuccess]="soForm.get('brand').valid"
+                   class="form-control col-md-12" type="text" formControlName="brand">
           </div>
 
           <div class="form-group col-md-6">
             <label> Modelo: </label>
-            <input class="form-control col-md-12" type="text">
+            <input [class.hasError]="soForm.get('model').invalid && soForm.get('model').touched"
+                   [class.hasSuccess]="soForm.get('model').valid"
+                   class="form-control col-md-12" type="text" formControlName="model">
           </div>
 
           <div class="form-group col-md-6">
             <label> Acessórios: </label>
-            <input class="form-control col-md-12" type="text">
+            <input class="form-control col-md-12" type="text" formControlName="accessories">
           </div>
 
           <div class="form-group col-md-12">
             <label> Detalhes: </label>
-            <textarea class="form-control col-md-12" type="text"></textarea>
+            <textarea class="form-control col-md-12" type="text" formControlName="details"></textarea>
           </div>
 
         </div>
@@ -184,30 +253,37 @@
 
           <div class="form-group col-md-12">
             <label> Problema relatado: </label>
-            <input class="form-control col-md-12" type="text" required>
+            <input [class.hasError]="soForm.get('reported_defect').invalid && soForm.get('reported_defect').touched"
+                   [class.hasSuccess]="soForm.get('reported_defect').valid"
+                   class="form-control col-md-12" type="text" formControlName="reported_defect">
           </div>
 
           <div class="form-group col-md-12">
             <label> Informações adicionais ao problema: </label>
-            <textarea class="form-control col-md-12" type="text"></textarea>
+            <textarea class="form-control col-md-12" type="text" formControlName="comments"></textarea>
           </div>
 
           <div class="form-group col-md-10">
             <label> Motivo da cobrança antecipada: </label>
-            <input class="form-control col-md-12" placeholder="Ex.: Taxa minima, valor minimo de peça tal..." type="text">
+            <input class="form-control col-md-12" placeholder="Ex.: Taxa minima, valor minimo de peça tal..."
+                   type="text" formControlName="advance_payment">
           </div>
 
           <div class="form-group col-md-2">
             <label> Valor minimo: </label>
-            <input class="form-control col-md-12" type="text">
+            <input class="form-control col-md-12" type="text" formControlName="advance_payment_value">
           </div>
 
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-dark" (click)="addNew(); this.modal.close()"
+                  [disabled]="soForm.invalid">Nova ordem de
+            serviço!
+          </button>
+          <button type="reset" class="btn btn-outline-dark">Limpar campos!</button>
+        </div>
       </form>
     </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="save()">Save</button>
   </div>
 </ng-template>
 
@@ -220,7 +296,50 @@
   </div>
   <div class="modal-body">
     <div class="container-fluid">
-
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Pesquise nome do cliente!" #searchClientCust>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button"
+                  (click)="getClientCustBySearch(searchClientCust.value)">Pesquisar!
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12 container">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>
+              Nome
+            </th>
+            <th>
+              CPF
+            </th>
+            <th>
+              N° Celular
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let cust of clientcusts">
+            <td>
+              {{cust.name}} {{cust.lastname}}
+            </td>
+            <td>
+              {{cust.cpf | mask:'000.000.000-00'}}
+            </td>
+            <td>
+              {{cust.phone}}
+            </td>
+            <td>
+              <button class="btn btn-default btn-dark col-12"
+                      (click)="openModal(osContent,'lg');getCustomerById(cust.id, null); this.modal.close()"> Criar
+                ordem de pagamento!
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </ng-template>
@@ -235,94 +354,125 @@
   </div>
   <div class="modal-body">
     <div class="container-fluid">
-      <form [formGroup]="soForm">
-        <div class="form-row">
+      <div class="container-fluid">
+        <fieldset class="form-jumb-container" disabled>
+          <h1 align="center"> Informações do Cliente </h1>
+          <hr>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label> Nome completo: </label>
+              <input class="form-control col-md-12" value="{{clientcust.name}} {{clientcust.lastname}}" type="text"
+                     required>
+            </div>
 
-          <div class="form-group col-md-6">
-            <label> Nome: </label>
-            <input class="form-control col-md-12" type="text" name="name" formControlName="name"
-                   [readonly]="!IsEditable">
-          </div>
+            <div class="form-group col-md-6">
+              <label> CPF: </label>
+              <input class="form-control col-md-12" value="{{clientcust.cpf | mask: '000.000.000-00'}}" type="text">
+            </div>
 
-          <div class="form-group col-md-6">
-            <label> Sobrenome: </label>
-            <input class="form-control col-md-12" type="text" formControlName="lastname" [readonly]="!IsEditable">
-          </div>
-
-          <div class="form-group col-md-4">
-            <label> Nascimento: </label>
-            <input class="form-control col-md-12" mask="00/00/0000" placeholder="DD/MM/AAAA" type="text"
-                   formControlName="birthdate" [readonly]="!IsEditable">
-          </div>
-
-          <div class="form-group col-md-4">
-            <label> CPF: </label>
-            <input class="form-control col-md-12" mask="000.000.000-00" placeholder="000.000.000-00" type="text"
-                   formControlName="cpf" [readonly]="!IsEditable">
-          </div>
-
-          <div class="form-group col-md-4">
-            <label> RG: </label>
-            <input class="form-control col-md-12" type="text" formControlName="rg" [readonly]="!IsEditable">
-          </div>
-
-          <div class="form-row col-md-12 jumbotron-fluid">
-            <hr>
             <div class="form-group col-md-6">
               <label> Celular: </label>
-              <input class="form-control col-md-12" mask="(00) 00000-0000" placeholder="(00) 00000-0000" type="text"
-                     formControlName="phone" [readonly]="!IsEditable">
+              <input class="form-control col-md-12" value="{{clientcust.phone | mask: '(00) 00000-0000'}}" type="text">
             </div>
+
+            <div class="form-group col-md-7">
+              <label> Endereco completo + N° Casa: </label>
+              <input class="form-control col-md-12" value="{{clientcust.address}} N° {{clientcust.house_number}}"
+                     type="text">
+            </div>
+
+            <div class="form-group col-md-5">
+              <label> Bairro e Cidade: </label>
+              <input class="form-control col-md-12"
+                     value="{{clientcust.district}}, {{clientcust.city}} - {{clientcust.state}}"
+                     placeholder="Nereu Ramos, Jaragua do Sul - SC" type="text">
+            </div>
+
+          </div>
+        </fieldset>
+        <form [formGroup]="soForm">
+          <h1 align="center"> Informações do Dispositivo </h1>
+          <hr>
+          <div class="form-row">
+
             <div class="form-group col-md-6">
-              <label> Telefone fixo: </label>
-              <input class="form-control col-md-12" mask="(00) 00000-0000" placeholder="(00) 00000-0000" type="text"
-                     formControlName="landline" [readonly]="!IsEditable">
+              <label> Tipo do aparelho: </label>
+              <input [class.hasError]="soForm.get('devicetype').invalid && soForm.get('devicetype').touched"
+                     [class.hasSuccess]="soForm.get('devicetype').valid"
+                     class="form-control col-md-12" type="text" formControlName="devicetype" [readonly]="!IsEditable">
             </div>
+
+            <div class="form-group col-md-6">
+              <label> Marca: </label>
+              <input [class.hasError]="soForm.get('brand').invalid && soForm.get('brand').touched"
+                     [class.hasSuccess]="soForm.get('brand').valid"
+                     class="form-control col-md-12" type="text" formControlName="brand" [readonly]="!IsEditable">
+            </div>
+
+            <div class="form-group col-md-6">
+              <label> Modelo: </label>
+              <input [class.hasError]="soForm.get('model').invalid && soForm.get('model').touched"
+                     [class.hasSuccess]="soForm.get('model').valid"
+                     class="form-control col-md-12" type="text" formControlName="model" [readonly]="!IsEditable">
+            </div>
+
+            <div class="form-group col-md-6">
+              <label> Acessórios: </label>
+              <input class="form-control col-md-12" type="text" formControlName="accessories" [readonly]="!IsEditable">
+            </div>
+
+            <div class="form-group col-md-12">
+              <label> Detalhes: </label>
+              <textarea class="form-control col-md-12" type="text" formControlName="details"
+                        [readonly]="!IsEditable"></textarea>
+            </div>
+
           </div>
 
-          <div class="form-row col-md-12 jumbotron-fluid">
-            <div class="form-group col-md-8">
-              <label> Endereco: </label>
-              <input class="form-control col-md-12" placeholder="Rua: ..." type="text" formControlName="address"
+          <h1 align="center"> Informações do Serviço </h1>
+          <hr>
+          <div class="form-row">
+
+            <div class="form-group col-md-12">
+              <label> Problema relatado: </label>
+              <input [class.hasError]="soForm.get('reported_defect').invalid && soForm.get('reported_defect').touched"
+                     [class.hasSuccess]="soForm.get('reported_defect').valid"
+                     class="form-control col-md-12" type="text" formControlName="reported_defect"
                      [readonly]="!IsEditable">
             </div>
 
-            <div class="form-group col-md-4">
-              <label> Numero da Casa: </label>
-              <input class="form-control col-md-12" placeholder="Numero: ..." mask="00000" type="text"
-                     formControlName="house_number" [readonly]="!IsEditable">
+            <div class="form-group col-md-12">
+              <label> Informações adicionais ao problema: </label>
+              <textarea class="form-control col-md-12" type="text" formControlName="comments"
+                        [readonly]="!IsEditable"></textarea>
             </div>
 
-            <div class="form-group col-md-5">
-              <label> Bairro: </label>
-              <input class="form-control col-md-12" placeholder="Bairro: ..." type="text" formControlName="district"
-                     [readonly]="!IsEditable">
-            </div>
-
-            <div class="form-group col-md-5">
-              <label> Cidade: </label>
-              <input class="form-control col-md-12" placeholder="Cidade: ..." type="text" formControlName="city"
-                     [readonly]="!IsEditable">
+            <div class="form-group col-md-10">
+              <label> Motivo da cobrança antecipada: </label>
+              <input class="form-control col-md-12" placeholder="Ex.: Taxa minima, valor minimo de peça tal..."
+                     type="text" formControlName="advance_payment" [readonly]="!IsEditable">
             </div>
 
             <div class="form-group col-md-2">
-              <label> UF: </label>
-              <input class="form-control col-md-12" mask="AA" placeholder="SC" type="text" formControlName="state"
+              <label> Valor minimo: </label>
+              <input class="form-control col-md-12" type="text" formControlName="advance_payment_value"
                      [readonly]="!IsEditable">
             </div>
+
           </div>
-        </div>
-        <div class="modal-footer">
-          <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"
-                  (click)="this.IsEditable = true;">Editar cliente?
-          </button>
-          <button *ngIf="IsEditable === true" [disabled]="soForm.untouched" type="button"
-                  class="btn btn-outline-dark" (click)="updateServiceOrder(); this.modal.close();">
-            Atualizar cliente!
-          </button>
-          <button *ngIf="IsEditable === true" type="reset" class="btn btn-outline-dark">Limpar!</button>
-        </div>
-      </form>
+
+          <div class="modal-footer">
+            <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"
+                    (click)="this.IsEditable = true;">Editar S.O?
+            </button>
+            <button *ngIf="IsEditable === true" [disabled]="soForm.untouched" type="button"
+                    class="btn btn-outline-dark" (click)="updateServiceOrder(); this.modal.close();">
+              Atualizar S.O!
+            </button>
+            <button *ngIf="IsEditable === true" type="reset" class="btn btn-outline-dark">Limpar!</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </ng-template>

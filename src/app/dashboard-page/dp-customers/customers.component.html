@@ -1,11 +1,21 @@
 <div class="row">
-  <h1 align="center" class="col-md-8"> Clientes! </h1>
-  <div class="header-btn col-4">
+  <h1 align="center" class="col-md-12"> Clientes! </h1>
+  <hr class="col-sm-10">
+  <div class="header-btn col-7">
     <button class="btn btn-default btn-dark" (click)="openModal(clientContent)">Criar cliente!</button>
   </div>
-  <hr class="col-sm-10">
+  <div class="input-group mb-3 col-5">
+    <input type="text" class="form-control" placeholder="Pesquise nome do cliente!" #searchClientCust>
+    <div class="input-group-append">
+      <button class="btn btn-default btn-outline-dark" type="button"
+              (click)="getClientCustBySearch(searchClientCust.value)">Pesquisar!
+      </button>
+      <button class="btn btn-default btn-outline-dark" type="button" (click)="getClientCustBySearch('')">Limpar!
+      </button>
+    </div>
+  </div>
   <div class="col-md-12 container">
-    <table class="table table-striped">
+    <table class="table table-striped" style="margin-bottom: 53px">
       <thead>
       <tr>
         <th>
@@ -52,7 +62,36 @@
       </tbody>
     </table>
   </div>
+  <nav class="navbar fixed-bottom navbar-light bg-light" style="left: 16.5%">
+    <button style="margin-bottom: 5px;" class="col-3 btn btn-dark" (click)="pageBack()"> Volta pagina! ({{page-1}})
+    </button>
+    <div class="col-6"></div>
+    <button style="margin-bottom: 5px;" class="col-3 btn btn-dark" (click)="pageNext()"> Proxima pagina!
+      ({{page+1}})
+    </button>
+  </nav>
 </div>
+
+<ng-template #searchModal let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <div>
+
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default btn-dark col-9 delete-btn" (click)="deleteCustomer(customer.id); this.modal.close()">
+      Pesquisar!
+    </button>
+    <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
+  </div>
+</ng-template>
 
 <ng-template #deleteModal let-modal>
   <div class="modal-header">

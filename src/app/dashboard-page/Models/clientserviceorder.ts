@@ -1,6 +1,8 @@
+import {Clientcust} from './clientcust.model';
+
 export class Clientserviceorder {
   id: number;
-  type: string;
+  devicetype: string;
   brand: string;
   model: string;
   accessories: string;
@@ -13,6 +15,9 @@ export class Clientserviceorder {
   comments: string;
   advance_payment: string;
   advance_payment_value: string;
+  status: string;
+  Clientcust: Clientcust;
+  Clientcust_id: number;
   created_at: string;
   updated_at: string;
 }

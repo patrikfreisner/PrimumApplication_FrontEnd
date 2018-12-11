@@ -20,8 +20,8 @@ export class ClientserviceorderService {
 
   constructor(private http: HttpClient) {
   }
-  public getServiceOrder(): Observable<Clientserviceorder[]> {
-    return this.http.get<Clientserviceorder[]>(this.apiMoipServiceUrl).pipe(
+  public getServiceOrder(page): Observable<Clientserviceorder[]> {
+    return this.http.get<Clientserviceorder[]>(this.apiMoipServiceUrl + '?q=' + page).pipe(
       tap((service_order: Clientserviceorder) => console.log('Loaded Client')),
       catchError(this.handleError<Clientserviceorder>('getMoipCustomers'))
     );

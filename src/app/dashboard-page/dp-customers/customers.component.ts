@@ -3,6 +3,7 @@ import {ClientcustService} from '../Services/ModelServices/clientcust.service';
 import {Clientcust} from '../Models/clientcust.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {SearchService} from '../Services/SearchManager/search.service';
 
 @Component({
   selector: 'app-customers',
@@ -11,6 +12,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 })
 export class CustomersComponent implements OnInit {
 
+  page: number;
   public customerForm: FormGroup;
   customers: Clientcust[];
   public customer: Clientcust;
@@ -18,11 +20,13 @@ export class CustomersComponent implements OnInit {
 
   constructor(
     private customerService: ClientcustService,
+    private searchService: SearchService,
     private modalService: NgbModal,
     private fb: FormBuilder
   ) {
-    this.getCustomers();
+    this.getCustomers(1);
     this.formCustomerBuilder();
+    this.page = 1;
   }
 
   ngOnInit() {
@@ -34,9 +38,32 @@ export class CustomersComponent implements OnInit {
     this.modalService.open(content);
   }
 
-  private getCustomers(): void {
-    this.customerService.getCustomers().subscribe(
+  private pageNext(): void {
+    this.page += 1;
+    this.getCustomers(this.page);
+    if (this.customers.length === 0) {
+      this.page -= 1;
+    }
+  }
+
+  private pageBack(): void {
+    if (this.page > 1) {
+      this.page -= 1;
+      this.getCustomers(this.page);
+    }
+  }
+
+  private getCustomers(page): void {
+    this.customerService.getCustomers(page).subscribe(
       (customers) => this.customers = customers
+    );
+  }
+
+  public getClientCustBySearch(object: string): void {
+    this.searchService.getClientcustBySearch('name', object).subscribe(
+      (clientcust) => {
+        this.customers = clientcust;
+      }
     );
   }
 
@@ -62,7 +89,7 @@ export class CustomersComponent implements OnInit {
     this.customerService.createCustomer(this.customer)
       .subscribe(
         () => {
-          this.getCustomers();
+          this.getCustomers(1);
         },
         () => alert('ocorreu um erro!')
       );
@@ -73,7 +100,7 @@ export class CustomersComponent implements OnInit {
 
     this.customerService.updateCustomer(this.customer)
       .subscribe(
-        () => this.getCustomers(),
+        () => this.getCustomers(1),
         () => alert('Ocorreu um erro!')
       );
   }
@@ -81,9 +108,10 @@ export class CustomersComponent implements OnInit {
   private deleteCustomer(id): void {
     this.customerService.deleteCustomer(id).subscribe(
       () => {
-        this.getCustomers();
+        this.getCustomers(1);
         this.customer = null;
-      }
+      },
+      () => alert('Não foi possivel deletar, tente mais tarde!')
     );
   }
 

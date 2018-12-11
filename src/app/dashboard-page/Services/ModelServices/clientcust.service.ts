@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {Clientcust} from '../../Models/clientcust.model';
 import {catchError, tap} from 'rxjs/operators';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -20,8 +20,8 @@ export class ClientcustService {
 
   constructor(private http: HttpClient) {
   }
-  public getCustomers(): Observable<Clientcust[]> {
-    return this.http.get<Clientcust[]>(this.apiMoipServiceUrl).pipe(
+  public getCustomers(page): Observable<Clientcust[]> {
+    return this.http.get<Clientcust[]>(this.apiMoipServiceUrl + '?q=' + page).pipe(
       tap((customer: Clientcust) => console.log('Loaded Client')),
       catchError(this.handleError<Clientcust>('getMoipCustomers'))
     );
@@ -63,9 +63,8 @@ export class ClientcustService {
 
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
-      Observable.throw('Error!');
       // Let the app keep running by returning an empty result.
-      return of(result as T);
+      return throwError(error);
     };
   }
 }
