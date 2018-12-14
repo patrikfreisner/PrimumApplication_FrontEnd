@@ -6,6 +6,10 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SearchService} from '../Services/SearchManager/search.service';
 import {Clientcust} from '../Models/clientcust.model';
 import {ClientcustService} from '../Services/ModelServices/clientcust.service';
+import * as jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-service-orders',
@@ -20,21 +24,72 @@ export class ServiceOrdersComponent implements OnInit {
   serviceorders: Clientserviceorder[];
   soForm: FormGroup;
   IsEditable: false;
+  selectedStatusValue = null;
+  selectStatus = [
+    {
+      label: 'Em aberto',
+      value: 'Em aberto'
+    },
+    {
+      label: 'Fechado',
+      value: 'Fechado'
+    }
+  ];
+  dayToday: String;
+  monthToday: String;
+  yearToday: String;
 
   constructor(
     public soService: ClientserviceorderService,
     public searchService: SearchService,
     public customerService: ClientcustService,
     private modalService: NgbModal,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
   ) {
     this.getServiceOrders(1);
     this.formServiceOrderBuilder();
     this.getClientCustBySearch('');
     this.page = 1;
+
+    this.dayToday = new Date().getDate().toLocaleString('latn');
+
+    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ];
+    this.monthToday = monthNames[new Date().getMonth()];
+    this.yearToday = new Date().getFullYear().toString();
   }
 
   ngOnInit() {
+  }
+
+  public toDocType(): void {
+    const margin = {
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0
+    };
+    const doc = new jsPDF('p', 'mm', 'a4');
+    doc.fromHTML($('#renderThis').get(0), 15, 15, {}, function () {
+      doc.save('client_so.pdf');
+    }, margin);
+  }
+
+  public captureScreen(): void {
+    const divHeight = $('#renderThis').height();
+    const divWidth = $('#renderThis').width();
+    const ratio = divHeight / divWidth;
+    html2canvas(document.getElementById('renderThis')).then(canvas => {
+      const image = canvas.toDataURL('image/png');
+      const doc = new jsPDF(); // using defaults: orientation=portrait, unit=mm, size=A4
+      const width = doc.internal.pageSize.getWidth();
+      let height = doc.internal.pageSize.getHeight();
+      height = ratio * width;
+      doc.addImage(image, 'PNG', 0, 0, width - 0, height - 50);
+      doc.save('OS' + this.service_order.id + '.pdf');
+    });
   }
 
   private pageNext(): void {
@@ -61,7 +116,8 @@ export class ServiceOrdersComponent implements OnInit {
 
   public getServiceOrders(page): void {
     this.soService.getServiceOrder(page).subscribe(
-      (service_order) => this.serviceorders = service_order
+      (service_order) => this.serviceorders = service_order,
+      () => alert('Não foi possivel buscar O.S')
     );
   }
 
@@ -69,7 +125,8 @@ export class ServiceOrdersComponent implements OnInit {
     this.searchService.getClientcustBySearch('name', object).subscribe(
       (clientcust) => {
         this.clientcusts = clientcust;
-      }
+      },
+      () => alert('Não foi possivel concluir busca!')
     );
   }
 
@@ -82,7 +139,7 @@ export class ServiceOrdersComponent implements OnInit {
       (clientcust) => {
         this.clientcust = clientcust;
       },
-      () => alert('error')
+      () => alert('Não foi possivel concluir ação!')
     );
     return this.clientcust;
   }
@@ -90,7 +147,7 @@ export class ServiceOrdersComponent implements OnInit {
   public getSOBySearch(id: number): void {
     this.searchService.getServiceOrderBySearch('id', id.toString()).subscribe(
       (so) => this.serviceorders = so,
-      () => alert('Error!')
+      () => alert('Não foi possivel concluir busca!')
     );
   }
 
@@ -104,8 +161,10 @@ export class ServiceOrdersComponent implements OnInit {
         this.service_order = so;
         if (setToForm === true) {
           this.soForm.patchValue(this.service_order);
+          this.selectedStatusValue = this.service_order.status;
         }
-      }
+      },
+      () => alert('Não foi possivel concluir ação!')
     );
     return this.service_order;
   }
@@ -121,17 +180,20 @@ export class ServiceOrdersComponent implements OnInit {
         () => {
           this.getServiceOrders(1);
         },
-        () => alert('ocorreu um erro!')
+        () => alert('Não foi possivel criar S.O!')
       );
   }
 
   private updateServiceOrder(so: Clientserviceorder): void {
     this.service_order = this.soForm.value;
+    if (this.service_order.status === 'Fechado') {
+      this.service_order.order_end_date = new Date().toLocaleDateString('latn');
+    }
 
     this.soService.updateServiceOrder(this.service_order)
       .subscribe(
         () => this.getServiceOrders(1),
-        () => alert('Ocorreu um erro!')
+        () => alert('Não foi possivel atualizar S.O!!')
       );
   }
 
@@ -140,7 +202,8 @@ export class ServiceOrdersComponent implements OnInit {
       () => {
         this.getServiceOrders(1);
         this.service_order = null;
-      }
+      },
+      () => alert('Não foi possivel deletar O.S!')
     );
   }
 

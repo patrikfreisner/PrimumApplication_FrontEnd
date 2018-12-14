@@ -55,7 +55,8 @@ export class CustomersComponent implements OnInit {
 
   private getCustomers(page): void {
     this.customerService.getCustomers(page).subscribe(
-      (customers) => this.customers = customers
+      (customers) => this.customers = customers,
+      () => alert('Ops!! ,um erro aconteceu ao tentar buscar usuarios!')
     );
   }
 
@@ -63,7 +64,8 @@ export class CustomersComponent implements OnInit {
     this.searchService.getClientcustBySearch('name', object).subscribe(
       (clientcust) => {
         this.customers = clientcust;
-      }
+      },
+      () => alert('Ocorreu um erro ao fazer a busca!')
     );
   }
 
@@ -78,7 +80,8 @@ export class CustomersComponent implements OnInit {
         if (setToForm === true) {
           this.customerForm.patchValue(this.customer);
         }
-      }
+      },
+      () => alert('Não foi possivel concluir ação!')
     );
     return this.customer;
   }
@@ -91,7 +94,7 @@ export class CustomersComponent implements OnInit {
         () => {
           this.getCustomers(1);
         },
-        () => alert('ocorreu um erro!')
+        () => alert('Ocorreu um erro ao tentar criar o cliente!')
       );
   }
 
@@ -111,7 +114,8 @@ export class CustomersComponent implements OnInit {
         this.getCustomers(1);
         this.customer = null;
       },
-      () => alert('Não foi possivel deletar, tente mais tarde!')
+      () => alert('Não foi possivel deletar, verifique se este cliente não tem Ordens de serviços atribuidas ao seu nome ' +
+        'ou tente mais tarde!')
     );
   }
 

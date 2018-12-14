@@ -12,7 +12,7 @@ import {CustomersComponent} from '../dashboard-page/dp-customers/customers.compo
 import {ServiceOrdersComponent} from '../dashboard-page/dp-service-orders/service-orders.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'dash', pathMatch: 'full'},
+  {path: '', redirectTo: 'dash/cust', pathMatch: 'full'},
   {
     path: 'dash', component: DashboardPageComponent,
     children: [

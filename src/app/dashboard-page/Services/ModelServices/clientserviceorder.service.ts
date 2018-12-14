@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 import {Clientserviceorder} from '../../Models/clientserviceorder';
 
@@ -63,9 +63,8 @@ export class ClientserviceorderService {
 
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
-      Observable.throw('Error!');
       // Let the app keep running by returning an empty result.
-      return of(result as T);
+      return throwError(error);
     };
   }
 }

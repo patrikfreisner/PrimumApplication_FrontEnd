@@ -1,10 +1,10 @@
 .header-btn {
   margin-top: 12px;
 }
+
 .header-btn > button {
   margin-right: 5px;
 }
-
 
 .delete-btn:hover {
   background-color: red;
@@ -19,3 +19,6 @@
   border-left: solid 5px lightgreen;
 }
 
+div#renderThis > div > div {
+  border: 2px solid black;
+}

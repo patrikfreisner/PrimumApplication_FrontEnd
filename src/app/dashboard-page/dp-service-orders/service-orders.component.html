@@ -63,7 +63,7 @@
         </td>
         <td>
           <button class="btn btn-dark"
-                  (click)="getCustomerById(so.Clientcust.id,null);getSObyId(so.id,null, true);openModal(detailsModal, 'lg')">
+                  (click)="getCustomerById(so.Clientcust.id,null);getSObyId(so.id,null, true);openModal(detailsModal, 'lg');">
             Detalhes!
           </button>
         </td>
@@ -344,6 +344,388 @@
   </div>
 </ng-template>
 
+<ng-template #pdfView let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-details-viewpdf">Detalhes</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div id="renderThis" style="padding: 20px;" class="container row">
+      <table class="col-12" style="
+    text-align: center;
+    background: #fff;">
+        <tbody>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td style="border: 1px solid;padding: 1px 5px;">
+                  <img class="top-logo" src="../../../assets/LOGO_PRIMUM_BLACK.png" width="100" width="100">
+                </td>
+                <td style="border: 1px solid;padding: 1px 5px;">
+                  <p style="text-transform: uppercase;">[[CORPNAME]] </p>
+                  <p style="text-align: center;">
+                    &nbsp;|&nbsp;[[email@corp.com]] | [[corpphone]]
+                  </p>
+                  <p style="text-transform: uppercase;">
+                    <strong>
+                      ORDEM DE SERVIÇOS
+                      <br>
+                      <small style="text-transform: uppercase;font-size: 12px;">{{service_order.status}}</small>
+                      <small *ngIf="service_order.status === 'Fechado'" style="text-transform: uppercase;font-size: 12px;"> | {{service_order.order_end_date}}</small>
+                    </strong>
+                  </p>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="10"></td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Atendimento:</strong>
+                </td>
+                <td width="40%" style="border: 1px solid;padding: 1px 5px; text-align: left;">
+                  <small class="hidden-print">Iniciado em</small>
+                  {{service_order.order_init_date}}
+                </td>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;  text-align: right;">
+                  <strong>Identificador:</strong>
+                </td>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;text-align:left;"> #OS{{service_order.id}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="10"></td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Cliente:</strong>
+                </td>
+                <td style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{clientcust.name}} {{clientcust.lastname}}
+                </td>
+                <td style="border: 1px solid;padding: 1px 5px;text-align:right;">
+                  <strong>RG/CPF/CNPJ:</strong>
+                </td>
+                <td width="30%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{clientcust.cpf | mask: '000.000.000-00'}}
+                </td>
+              </tr>
+              <tr>
+                <td  width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Endereço:</strong>
+                </td>
+                <td colspan="3" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{clientcust.address}}, {{clientcust.city}} - {{clientcust.state | uppercase}}
+                </td>
+              </tr>
+              <tr>
+                <td width="20%" width="150" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Telefone celular:</strong>
+                </td>
+                <td width="50%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{clientcust.phone | mask: '(00) 00000-0000'}}
+                </td>
+                <td width="10%" style="border: 1px solid;padding: 1px 5px;text-align:right;">
+                  <strong>Telefone fixo:</strong>
+                </td>
+                <td width="30%" width="100" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{clientcust.landline | mask: '(00) 0000-0000'}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="10"></td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Tipo de aparelho:</strong>
+                </td>
+                <td width="30%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.devicetype}}
+                </td>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;text-align:right;">
+                  <strong>Marca:</strong>
+                </td>
+                <td width="30%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.brand}}
+                </td>
+              </tr>
+              <tr>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Modelo:</strong>
+                </td>
+                <td width="30%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.model}}
+                </td>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;text-align:right;">
+                  <strong>Acessorios:</strong>
+                </td>
+                <td width="30%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.accessories}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="10"></td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Problema relatado:</strong>
+                </td>
+                <td colspan="3" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.reported_defect}}
+                </td>
+              </tr>
+              <tr>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Detalhes:</strong>
+                </td>
+                <td colspan="3" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.details}}
+                </td>
+              </tr>
+              <tr *ngIf="!service_order.advance_payment_value === null || !(service_order.advance_payment_value === '')">
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Cobrança antecipada:</strong>
+                </td>
+                <td width="40%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.advance_payment}}
+                </td>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Valor:</strong>
+                </td>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  R${{service_order.advance_payment_value}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="10"></td>
+        </tr>
+        <tr *ngIf="!service_order.solution === null || !(service_order.solution === '')">
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
+                  <strong>Solução:</strong>
+                </td>
+                <td style="border: 1px solid;padding: 1px 5px;text-align:left;">
+                  {{service_order.solution}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="20"></td>
+        </tr>
+        <tr>
+          <td>
+            <p id="os-additional-print" style="font-size: 10px">* Autorizo a execução dos serviços acima discriminados e
+              assumo a responsabilidade pelos dados fornecidos,
+              bem como a responsabilidade da cobrança e/ou pagamento em caso de inadimplência por parte do
+              referido cliente.</p>
+          </td>
+        </tr>
+        <tr>
+          <td height="5"></td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td style="padding: 1px 5px; text-align: center;">
+                  [[CITYNAME]], {{dayToday}} de {{monthToday}} de {{yearToday}}.
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="20"></td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr height="100" class="hidden-print">
+                <td colspan="5">
+                  <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="text-alert">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hidden-print">
+                <td colspan="5">
+                  <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="text-alert">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td width="20"></td>
+                <td width="200"
+                    style="border-top: 1px solid; padding: 1px 5px;text-align: center;text-transform: capitalize;">
+                  [[NOME DO ATENDENTE]]
+                  <br>
+                  <span style="font-size: 11px;text-transform: uppercase;">[[EMPRESA]]</span>
+                </td>
+                <td width="10"></td>
+                <td width="200" style="border-top: 1px solid; padding: 1px 5px;text-align: center;
+              text-transform: capitalize;">
+                  {{clientcust.name}} {{clientcust.lastname}}
+                  <br>
+                  <span style="font-size: 11px;text-transform: uppercase;">{{clientcust.cpf}}</span>
+                </td>
+                <td width="20"></td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td height="60"></td>
+        </tr>
+        <tr>
+          <td>
+            <small style="font-size: 10px; margin-bottom: 0px;">Abaixo via da loja!</small>
+            <hr style="border-top: 1px dashed #000;
+      color: #fff;
+      background-color: #fff;
+      height: 1px;
+      margin-top: 0px;">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr>
+                <td width="15%" style="border: 1px solid;padding: 5px;">
+                  <strong>Cliente:</strong>
+                </td>
+                <td style="border: 1px solid;padding: 5px;text-align:left;"> {{clientcust.name}}
+                  {{clientcust.lastname}}
+                </td>
+                <td style="border: 1px solid;padding: 5px;">
+                  <strong>Data do Atendimento:</strong>
+                </td>
+                <td style="border: 1px solid;padding: 5px;text-align:left;">
+                  <small class="hidden-print">Inicio do atendimento:</small>
+                  {{service_order.order_init_date}}
+                </td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid;padding: 5px;">
+                  <strong>RG/CNPJ:</strong>
+                </td>
+                <td width="40%" style="border: 1px solid;padding: 5px;text-align:left;">
+                  {{clientcust.cpf | mask: '000.000.000-00'}}
+                </td>
+                <td style="border: 1px solid;padding: 5px;">
+                  <strong>Número da OS:</strong>
+                </td>
+                <td style="border: 1px solid;padding: 5px;text-align:left;"> #OS{{clientcust.id}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <table class="col-12">
+              <tbody>
+              <tr height="100" class="hidden-print">
+                <td colspan="5">
+                  <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="text-alert">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hidden-print">
+                <td colspan="5">
+                  <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="text-alert">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td width="20"></td>
+                <td width="200"
+                    style="border-top: 1px solid; padding: 1px 5px;text-align: center;text-transform: capitalize;">
+                  [[NOME DO ATENDENTE]]
+                  <br>
+                  <span style="font-size: 11px;text-transform: uppercase;">[[EMPRESA]]</span>
+                </td>
+                <td width="10"></td>
+                <td width="200" style="border-top: 1px solid; padding: 1px 5px;text-align: center;
+                      text-transform: capitalize;">
+                  {{clientcust.name}} {{clientcust.lastname}}
+                  <br>
+                  <span style="font-size: 11px;text-transform: uppercase;">{{clientcust.cpf}}</span>
+                </td>
+                <td width="20"></td>
+              </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div style="height: 25px;"></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-dark" (click)="captureScreen()">Download</button>
+    <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
+  </div>
+</ng-template>
+
 <ng-template #detailsModal let-modal>
   <div class="modal-header">
     <h4 *ngIf="!IsEditable" class="modal-title" id="modal-details-modalDtl">Detalhes</h4>
@@ -361,30 +743,29 @@
           <div class="form-row">
             <div class="form-group col-md-12">
               <label> Nome completo: </label>
-              <input class="form-control col-md-12" value="{{clientcust.name}} {{clientcust.lastname}}" type="text"
-                     required>
+              <input class="form-control col-md-12" value="{{clientcust?.name}} {{clientcust?.lastname}}" type="text">
             </div>
 
             <div class="form-group col-md-6">
               <label> CPF: </label>
-              <input class="form-control col-md-12" value="{{clientcust.cpf | mask: '000.000.000-00'}}" type="text">
+              <input class="form-control col-md-12" value="{{clientcust?.cpf | mask: '000.000.000-00'}}" type="text">
             </div>
 
             <div class="form-group col-md-6">
               <label> Celular: </label>
-              <input class="form-control col-md-12" value="{{clientcust.phone | mask: '(00) 00000-0000'}}" type="text">
+              <input class="form-control col-md-12" value="{{clientcust?.phone | mask: '(00) 00000-0000'}}" type="text">
             </div>
 
             <div class="form-group col-md-7">
               <label> Endereco completo + N° Casa: </label>
-              <input class="form-control col-md-12" value="{{clientcust.address}} N° {{clientcust.house_number}}"
+              <input class="form-control col-md-12" value="{{clientcust?.address}} N° {{clientcust?.house_number}}"
                      type="text">
             </div>
 
             <div class="form-group col-md-5">
               <label> Bairro e Cidade: </label>
               <input class="form-control col-md-12"
-                     value="{{clientcust.district}}, {{clientcust.city}} - {{clientcust.state}}"
+                     value="{{clientcust?.district}}, {{clientcust?.city}} - {{clientcust?.state}}"
                      placeholder="Nereu Ramos, Jaragua do Sul - SC" type="text">
             </div>
 
@@ -460,8 +841,40 @@
             </div>
 
           </div>
+          <h1 align="center"> Solução! </h1>
+          <hr>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label> Solução: </label>
+              <textarea class="form-control col-md-12" type="text" formControlName="solution"
+                        [readonly]="!IsEditable" ></textarea>
+            </div>
+            <div class="form-group col-md-4">
+              <label> Data de Abertura: </label>
+              <input class="form-control col-md-12" type="text" formControlName="order_init_date"
+                     [readonly]="true">
+            </div>
+            <div class="form-group col-md-4">
+              <label> Data de fechamento: </label>
+              <input class="form-control col-md-12" type="text" formControlName="order_end_date"
+                     [readonly]="true">
+            </div>
 
+            <div class="form-group col-md-4">
+              <label for="status" class="col-sm-12 control-label"> Data de fechamento: </label>
+              <div class="col-sm-12">
+                <select class="form-control" id="status" [(ngModel)]="selectedStatusValue" formControlName="status">
+                  <option *ngFor="let status of selectStatus"
+                          [value]="status.value" [disabled]="!IsEditable">{{status.label}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
           <div class="modal-footer">
+            <button class="btn btn-default btn-dark" (click)="openModal(pdfView, 'lg');this.modal.close();">Versão para
+              impressão!
+            </button>
             <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"
                     (click)="this.IsEditable = true;">Editar S.O?
             </button>
@@ -476,3 +889,4 @@
     </div>
   </div>
 </ng-template>
+
