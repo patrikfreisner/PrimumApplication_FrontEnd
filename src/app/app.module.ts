@@ -1,6 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {InjectionToken, NgModule} from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import {NgModule} from '@angular/core';
+import {HttpClientModule} from '@angular/common/http';
+import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
 import {NgbActiveModal, NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -17,9 +18,23 @@ import {CpPaymentsComponent} from './control-panel/cp-payments/cp-payments.compo
 import {CpCustomersComponent} from './control-panel/cp-customers/cp-customers.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HelpersModule} from './helpers/helpers.module';
-import { CustomersComponent } from './dashboard-page/dp-customers/customers.component';
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { ServiceOrdersComponent } from './dashboard-page/dp-service-orders/service-orders.component';
+import {CustomersComponent} from './dashboard-page/dp-customers/customers.component';
+import {AngularFontAwesomeModule} from 'angular-font-awesome';
+import {ServiceOrdersComponent} from './dashboard-page/dp-service-orders/service-orders.component';
+import {LoginPageComponent} from './primum-portal/login-page/login-page.component';
+import {SignUpPageComponent} from './primum-portal/sign-up-page/sign-up-page.component';
+
+
+// Angular Token
+import {Angular2TokenService} from 'angular2-token';
+import {AuthGuard} from './Guards/auth.guard';
+import {NotAuthenticatedGuard} from './Guards/not-authenticated.guard';
+import { CpClientIntegrationComponent } from './control-panel/cp-client-integration/cp-client-integration.component';
+import { DpLoadingComponent } from './dashboard-page/dp-loading/dp-loading.component';
+import { CpUserManagementComponent } from './control-panel/cp-user-management/cp-user-management.component';
+import { SpCompanyComponent } from './primum-portal/sign-up-page/sp-company/sp-company.component';
+import { SpUserComponent } from './primum-portal/sign-up-page/sp-user/sp-user.component';
+import { WaitingForRegisterComponent } from './primum-portal/SharedPages/waiting-for-register/waiting-for-register.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +49,14 @@ import { ServiceOrdersComponent } from './dashboard-page/dp-service-orders/servi
     CpCustomersComponent,
     CustomersComponent,
     ServiceOrdersComponent,
+    LoginPageComponent,
+    SignUpPageComponent,
+    CpClientIntegrationComponent,
+    DpLoadingComponent,
+    CpUserManagementComponent,
+    SpCompanyComponent,
+    SpUserComponent,
+    WaitingForRegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,10 +66,18 @@ import { ServiceOrdersComponent } from './dashboard-page/dp-service-orders/servi
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    HttpModule,
     HelpersModule,
     NgxMaskModule.forRoot()
   ],
-  providers: [ModalService, NgbActiveModal],
+  providers: [
+    Angular2TokenService,
+    AuthGuard,
+    NotAuthenticatedGuard,
+    ModalService,
+    NgbActiveModal,
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

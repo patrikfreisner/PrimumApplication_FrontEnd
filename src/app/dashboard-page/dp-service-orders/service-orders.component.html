@@ -366,9 +366,9 @@
                   <img class="top-logo" src="../../../assets/LOGO_PRIMUM_BLACK.png" width="100" width="100">
                 </td>
                 <td style="border: 1px solid;padding: 1px 5px;">
-                  <p style="text-transform: uppercase;">[[CORPNAME]] </p>
+                  <p style="text-transform: uppercase; font-size: 24px;"><b>{{current_user.Company.fantasy_name}}</b></p>
                   <p style="text-align: center;">
-                    &nbsp;|&nbsp;[[email@corp.com]] | [[corpphone]]
+                    &nbsp;{{current_user.Company.company_phone || 'Sem numero cadastrado'}} | {{current_user.name}}
                   </p>
                   <p style="text-transform: uppercase;">
                     <strong>
@@ -575,7 +575,7 @@
               <tbody>
               <tr>
                 <td style="padding: 1px 5px; text-align: center;">
-                  [[CITYNAME]], {{dayToday}} de {{monthToday}} de {{yearToday}}.
+                  {{current_user.Company.Customer.city}}, {{dayToday}} de {{monthToday}} de {{yearToday}}.
                 </td>
               </tr>
               </tbody>
@@ -609,9 +609,9 @@
                 <td width="20"></td>
                 <td width="200"
                     style="border-top: 1px solid; padding: 1px 5px;text-align: center;text-transform: capitalize;">
-                  [[NOME DO ATENDENTE]]
+                  {{current_user.name}}
                   <br>
-                  <span style="font-size: 11px;text-transform: uppercase;">[[EMPRESA]]</span>
+                  <span style="font-size: 11px;text-transform: uppercase;">{{current_user.Company.fantasy_name}}</span>
                 </td>
                 <td width="10"></td>
                 <td width="200" style="border-top: 1px solid; padding: 1px 5px;text-align: center;
@@ -668,7 +668,7 @@
                 <td style="border: 1px solid;padding: 5px;">
                   <strong>Número da OS:</strong>
                 </td>
-                <td style="border: 1px solid;padding: 5px;text-align:left;"> #OS{{clientcust.id}}</td>
+                <td style="border: 1px solid;padding: 5px;text-align:left;"> #OS{{service_order.id}}</td>
               </tr>
               </tbody>
             </table>
@@ -698,9 +698,9 @@
                 <td width="20"></td>
                 <td width="200"
                     style="border-top: 1px solid; padding: 1px 5px;text-align: center;text-transform: capitalize;">
-                  [[NOME DO ATENDENTE]]
+                  {{current_user.name}}
                   <br>
-                  <span style="font-size: 11px;text-transform: uppercase;">[[EMPRESA]]</span>
+                  <span style="font-size: 11px;text-transform: uppercase;">{{current_user.Company.fantasy_name}}</span>
                 </td>
                 <td width="10"></td>
                 <td width="200" style="border-top: 1px solid; padding: 1px 5px;text-align: center;
@@ -872,7 +872,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-default btn-dark" (click)="openModal(pdfView, 'lg');this.modal.close();">Versão para
+            <button class="btn btn-default btn-dark" *ngIf="IsEditable === false" (click)="openModal(pdfView, 'lg');this.modal.close();">Versão para
               impressão!
             </button>
             <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"

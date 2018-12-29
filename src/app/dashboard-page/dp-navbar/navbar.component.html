@@ -1,7 +1,7 @@
 <nav class="navbar navbar-light bg-dark fixed-top">
   <a class="navbar-brand" routerLink="">
     <img src={{comp_logo}} width="30" height="30" class="d-inline-block align-top" alt="">
-    <b style="color: white"> {{company}} </b>
+    <b style="color: white"> {{current_user.Company.fantasy_name}}</b>
   </a>
   <div class="btn-group">
     <div class="btn-group dropleft" role="group">
@@ -10,12 +10,12 @@
       </button>
       <div class="dropdown-menu">
         <!-- Dropdown menu links -->
-        <a class="dropdown-item" href="#">Atualizações</a>
-        <a class="dropdown-item" href="#">Opções</a>
-        <a class="dropdown-item" href="#">Logout</a>
+        <a class="dropdown-item" >Atualizações</a>
+        <a class="dropdown-item" >Opções</a>
+        <a class="dropdown-item" style="cursor: pointer;" (click)="signOut()">Sair</a>
         <div class="dropdown-divider"></div>
-        <a *ngIf="current_user.role == 'admin'" class="dropdown-item" routerLink="/control">Painel de Controle</a>
-        <a *ngIf="current_user.role != 'admin'" class="dropdown-item clickable" (click)="open(aboutSystemContent)">Sobre o meu sistema?</a>
+        <a *ngIf="current_user.Company.Role.SubscriptionType == 'ADMIN_PRIMUM'" class="dropdown-item" routerLink="/control">Painel de Controle</a>
+        <a *ngIf="current_user.Company.Role.SubscriptionType != ('active' || 'Activated')" class="dropdown-item clickable" (click)="open(aboutSystemContent)">Sobre o meu sistema?</a>
       </div>
     </div>
     <button class="btn btn-sm btn-outline-light">

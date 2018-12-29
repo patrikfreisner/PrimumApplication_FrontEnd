@@ -1,0 +1,7 @@
+.hasError {
+  border-left: solid 5px red;
+}
+
+.hasSuccess {
+  border-left: solid 5px lightgreen;
+}

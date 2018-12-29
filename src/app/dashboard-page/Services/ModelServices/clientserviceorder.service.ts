@@ -1,70 +1,72 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable, of, throwError} from 'rxjs';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
 import {Clientserviceorder} from '../../Models/clientserviceorder';
+import {Angular2TokenService} from 'angular2-token';
+import {Response} from '@angular/http';
+import {Clientcust} from '../../Models/clientcust.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientserviceorderService {
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'content-type': 'application/json', 'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-    })
-  };
+  apiMoipServiceUrl = 'api/clientserviceorders';
 
-  apiMoipServiceUrl = 'http://localhost:3000/api/clientserviceorders';
-
-  constructor(private http: HttpClient) {
+  constructor(private http: Angular2TokenService) {
   }
+
   public getServiceOrder(page): Observable<Clientserviceorder[]> {
-    return this.http.get<Clientserviceorder[]>(this.apiMoipServiceUrl + '?q=' + page).pipe(
-      tap((service_order: Clientserviceorder) => console.log('Loaded Client')),
-      catchError(this.handleError<Clientserviceorder>('getMoipCustomers'))
+    return this.http.get(this.apiMoipServiceUrl + '?q=' + page).pipe(
+      map((resp: Response) => {
+        const collection: Array<any> = resp.json();
+        const serviceOrderCollection: Clientserviceorder[] = [];
+
+        collection.forEach(item => {
+          serviceOrderCollection.push(item as Clientserviceorder);
+        });
+
+        return serviceOrderCollection;
+      }),
+      catchError(this.handleError)
     );
   }
 
   public getServiceOrderById(id: number): Observable<Clientserviceorder> {
     const url = `${this.apiMoipServiceUrl}/${id}`;
-    return this.http.get<Clientserviceorder>(url).pipe(
-      tap((clientserviceorder) => console.log(`fetched hero id=${id}`)),
-      catchError(this.handleError<Clientserviceorder>(`getHero id=${id}`))
+    return this.http.get(url).pipe(
+      map((resp: Response) => {
+        const cust = resp.json();
+        return cust as Clientserviceorder;
+      }),
+      catchError(this.handleError)
     );
   }
 
   public createServiceOrder(so: Clientserviceorder): Observable<Clientserviceorder> {
-    return this.http.post<Clientserviceorder>(this.apiMoipServiceUrl, so, this.httpOptions)
-      .pipe(
-        catchError(this.handleError('addHero', so))
-      );
+    return this.http.post(this.apiMoipServiceUrl, so).pipe(
+      tap((c: any) => console.log('createdCustomer')),
+      catchError(this.handleError)
+    );
   }
+
   public updateServiceOrder(so: Clientserviceorder): Observable<Clientserviceorder> {
-    return this.http.put<Clientserviceorder>(`${this.apiMoipServiceUrl}/${so.id}`, so, this.httpOptions).pipe(
-      catchError(this.handleError('error operação put', so))
+    return this.http.put(`${this.apiMoipServiceUrl}/${so.id}`, so).pipe(
+      tap((c: any) => console.log('updateCustomer')),
+      catchError(this.handleError)
     );
   }
 
   public deleteServiceOrder(id: number): Observable<{}> {
     const url = `${this.apiMoipServiceUrl}/${id}`;
-    return this.http.delete(url, this.httpOptions)
+    return this.http.delete(url)
       .pipe(
-        catchError(this.handleError('deleteSO'))
+        catchError(this.handleError)
       );
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
-      // Let the app keep running by returning an empty result.
-      return throwError(error);
-    };
+  private handleError() {
+    return throwError('Um erro ocorreu!');
   }
 }

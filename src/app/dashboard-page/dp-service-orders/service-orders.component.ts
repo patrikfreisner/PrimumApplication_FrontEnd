@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Clientserviceorder} from '../Models/clientserviceorder';
 import {ClientserviceorderService} from '../Services/ModelServices/clientserviceorder.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +10,8 @@ import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import * as $ from 'jquery';
+import {AuthService} from '../../Service/auth.service';
+import {User} from '../../Models/user.model';
 
 @Component({
   selector: 'app-service-orders',
@@ -17,6 +19,7 @@ import * as $ from 'jquery';
   styleUrls: ['./service-orders.component.css']
 })
 export class ServiceOrdersComponent implements OnInit {
+
   page: number;
   clientcusts: Clientcust[];
   clientcust: Clientcust;
@@ -38,6 +41,7 @@ export class ServiceOrdersComponent implements OnInit {
   dayToday: String;
   monthToday: String;
   yearToday: String;
+  current_user: User;
 
   constructor(
     public soService: ClientserviceorderService,
@@ -46,7 +50,9 @@ export class ServiceOrdersComponent implements OnInit {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
+    private authService: AuthService,
   ) {
+    this.userData();
     this.getServiceOrders(1);
     this.formServiceOrderBuilder();
     this.getClientCustBySearch('');
@@ -112,6 +118,14 @@ export class ServiceOrdersComponent implements OnInit {
     this.formServiceOrderBuilder();
     this.modalService.open(content, {size: size});
     this.getClientCustBySearch('');
+  }
+
+  public userData(): void {
+    this.authService.getCurrentUserData().then(
+      (user) => {
+        this.current_user = user;
+      }
+    );
   }
 
   public getServiceOrders(page): void {

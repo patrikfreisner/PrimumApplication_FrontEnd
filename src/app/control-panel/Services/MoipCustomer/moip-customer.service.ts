@@ -1,8 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Customer} from '../../Models/customer.model';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
+import {Angular2TokenService} from 'angular2-token';
+import {Response} from '@angular/http';
+import {Clientserviceorder} from '../../../dashboard-page/Models/clientserviceorder';
 
 @Injectable({
   providedIn: 'root'
@@ -16,60 +19,71 @@ export class MoipCustomerService {
     })
   };
 
-  apiMoipServiceUrl = 'http://localhost:3000/api/customers';
+  apiMoipServiceUrl = 'api/customers';
 
-  constructor(private http: HttpClient) {
+  constructor(private http: Angular2TokenService) {
   }
 
   public getMoipCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.apiMoipServiceUrl).pipe(
-      tap((customer: Customer) => console.log('Loaded Client')),
-      catchError(this.handleError<Customer>('getMoipCustomers'))
+    return this.http.get(this.apiMoipServiceUrl).pipe(
+      map((resp: Response) => {
+        const collection: Array<any> = resp.json();
+        const CustomerCollection: Customer[] = [];
+
+        collection.forEach(item => {
+          CustomerCollection.push(item as Customer);
+        });
+
+        return CustomerCollection;
+      }),
+      catchError(this.handleError)
     );
   }
 
   public getMoipCustomerById(id: number): Observable<Customer> {
     const url = `${this.apiMoipServiceUrl}/${id}`;
-    return this.http.get<Customer>(url).pipe(
-      tap(_ => console.log(`fetched hero id=${id}`)),
-      catchError(this.handleError<Customer>(`getHero id=${id}`))
+    return this.http.get(url).pipe(
+      map((resp: Response) => {
+        const cust = resp.json();
+        return cust as Customer;
+      }),
+      catchError(this.handleError)
     );
   }
 
   public createMoipIDForCustomer(id: number): Observable<Customer> {
-    const url = `http://localhost:3000/api/customers_moip/${id}`;
-    return this.http.get<Customer>(url).pipe(
-      tap(_ => console.log(`created moip id=${id}`)),
-      catchError(this.handleError<Customer>(`Error createMoipIDForCustomer id=${id}`))
+    const url = `api/customers_moip/${id}`;
+    return this.http.get(url).pipe(
+      map((resp: Response) => {
+        const cust = resp.json();
+        return cust as Customer;
+      }),
+      catchError(this.handleError)
     );
   }
 
   public createMoipCustomer(customer: Customer): Observable<Customer> {
-    return this.http.post<Customer>(this.apiMoipServiceUrl, customer, this.httpOptions)
-      .pipe(
-        catchError(this.handleError('addHero', customer))
-      );
+    return this.http.post(this.apiMoipServiceUrl, customer).pipe(
+      map((resp: Response) => {
+        const cust = resp.json();
+        return cust as Customer;
+      }),
+      catchError(this.handleError)
+    );
   }
 
   public deleteMoipCustomer(id: number): Observable<{}> {
     const url = `${this.apiMoipServiceUrl}/${id}`;
-    return this.http.delete(url, this.httpOptions)
-      .pipe(
-        catchError(this.handleError('deleteMoipCustomer'))
-      );
+    return this.http.delete(url).pipe(
+      map((resp: Response) => {
+        const cust = resp.json();
+        return cust as Customer;
+      }),
+      catchError(this.handleError)
+    );
   }
 
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      console.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
+  private handleError() {
+    return throwError('Erro ocorreu ao criar moip');
   }
 }

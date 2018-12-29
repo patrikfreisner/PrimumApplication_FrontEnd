@@ -1,0 +1,89 @@
+<img src="../../../assets/LOGO_PRIMUM_WHITE.png" alt="Logo Primum" width="250" height="250">
+
+<br>
+<hr style="background-color: white;">
+<h4>
+  Agora que você já tem uma conta, vamos cadastrar sua empresa!
+</h4>
+<hr style="background-color: white;">
+
+<div *ngIf="formErrors" class="alert alert-danger">
+  <strong>
+    Ocorreu um erro ao tentar cadastrar seu pedido!
+  </strong>
+  <ul>
+    <li *ngFor="let error of formErrors">
+      <p *ngIf="error.toString() ==='Email has already been taken'"> Já existe uma conta com esse email! </p>
+      <p *ngIf="error.toString() !='Email has already been taken'">{{error}}</p>
+
+    </li>
+  </ul>
+</div>
+
+<form [formGroup]="companyForm" (ngSubmit)="signUpUser()">
+  <div class="form-group">
+    <label for="inputNome" class="sr-only">Nome: </label>
+    <input style="margin-left: auto; margin-right: auto;" type="text" id="inputNome" class="form-control col-8"
+           placeholder="Nome fantasia: " formControlName="fantasy_name">
+  </div>
+
+  <div class="form-group">
+    <label for="inputEmail" class="sr-only">company:name: </label>
+    <input style="margin-left: auto; margin-right: auto;" type="text" id="inputEmail" class="form-control col-8"
+           placeholder="Razão Social" formControlName="company_name">
+  </div>
+
+  <div class="form-group">
+    <label for="inputPassword" class="sr-only">cnpj:</label>
+    <input style="margin-left: auto; margin-right: auto;" type="text" id="inputPassword"
+           class="form-control col-8" placeholder="CNPJ" formControlName="cnpj">
+  </div>
+
+  <div class="form-group">
+    <label for="responsible" class="sr-only">responsavel:</label>
+    <input style="margin-left: auto; margin-right: auto; margin-top: 0px;" type="text"
+           id="responsible"
+           class="form-control col-8" placeholder="responsable"
+           formControlName="responsable">
+
+  </div>
+
+  <div class="form-group">
+    <label for="foundation" class="sr-only">Senha:</label>
+    <input style="margin-left: auto; margin-right: auto; margin-top: 0px;" type="text"
+           id="foundation"
+           class="form-control col-8" placeholder="Data de abertura da empresa"
+           formControlName="foundation_date">
+
+  </div>
+
+  <div class="form-group">
+    <label for="subject" class="sr-only">Senha:</label>
+    <input style="margin-left: auto; margin-right: auto; margin-top: 0px;" type="text"
+           id="subject"
+           class="form-control col-8" placeholder="Ramo da empresa?"
+           formControlName="company_subject">
+
+  </div>
+  <div class="form-group">
+    <label for="phone" class="sr-only">Senha:</label>
+    <input style="margin-left: auto; margin-right: auto; margin-top: 0px;" type="text"
+           id="phone"
+           class="form-control col-8" placeholder="Telefone comercial da empresa"
+           formControlName="company_phone">
+
+  </div>
+
+
+
+  <button style="margin-left: auto; margin-right: auto;" class="btn btn-lg btn-light btn-block col-8"
+          type="submit" [disabled]="!userform.valid || submitted">Cadastrar!
+  </button>
+
+  <br>
+
+  <h6>
+    Caso queira fazer o cadastro outra hora, clique <a style="color: #007bff; cursor: pointer;"
+                                                       (click)="signOut()">aqui</a> para sair!
+  </h6>
+</form>

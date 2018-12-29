@@ -1,0 +1,76 @@
+<img src="../../../assets/LOGO_PRIMUM_WHITE.png" alt="Logo Primum" width="250" height="250">
+
+<br>
+<hr style="background-color: white;">
+<h4>
+  Faça o pré-cadastro abaixo. É rápido, fácil e o resto a gente faz!
+</h4>
+<hr style="background-color: white;">
+
+<div *ngIf="formErrors" class="alert alert-danger">
+  <strong>
+    Ocorreu um erro ao tentar cadastrar seu pedido!
+  </strong>
+  <ul>
+    <li *ngFor="let error of formErrors">
+      <p *ngIf="error.toString() ==='Email has already been taken'"> Já existe uma conta com esse email! </p>
+      <p *ngIf="error.toString() !='Email has already been taken'">{{error}}</p>
+
+    </li>
+  </ul>
+</div>
+
+<form [formGroup]="userform" (ngSubmit)="signUpUser()">
+  <div class="form-group">
+    <p style="color: red; font-size: 10px;"
+       *ngIf="userform.get('name').hasError('required') && userform.get('name').touched">
+      Campo é obrigatorio!!</p>
+    <label for="inputNome" class="sr-only">Nome: </label>
+    <input style="margin-left: auto; margin-right: auto;" type="email" id="inputNome" class="form-control col-8"
+           placeholder="Nome" formControlName="name"
+           [class.hasError]="userform.get('name').errors && userform.get('name').touched"
+           [class.hasSuccess]="userform.get('name').valid">
+  </div>
+
+  <div class="form-group">
+    <p style="color: red; font-size: 10px;"
+       *ngIf="userform.get('email').hasError('required') && userform.get('email').touched">
+      Campo é obrigatorio!!</p>
+    <label for="inputEmail" class="sr-only">Email: </label>
+    <input style="margin-left: auto; margin-right: auto;" type="email" id="inputEmail" class="form-control col-8"
+           placeholder="Email" formControlName="email"
+           [class.hasError]="userform.get('email').errors && userform.get('email').touched"
+           [class.hasSuccess]="userform.get('email').valid">
+  </div>
+
+  <div class="form-group">
+    <p style="color: red; font-size: 10px;"
+       *ngIf="userform.get('password').hasError('required') && userform.get('password').touched">
+      Campo é obrigatorio!!</p>
+    <p style="color: red; font-size: 10px;"
+       *ngIf="userform.get('password').hasError('minlength') && !userform.get('password').hasError('required') && userform.get('password').touched">
+      Deve conter mais de 8 caracteres!!</p>
+    <label for="inputPassword" class="sr-only">Senha:</label>
+    <input style="margin-left: auto; margin-right: auto;" type="password" id="inputPassword"
+           class="form-control col-8" placeholder="Senha" formControlName="password"
+           [class.hasError]="userform.get('password').errors && userform.get('password').touched"
+           [class.hasSuccess]="userform.get('password').valid">
+  </div>
+
+  <div class="form-group">
+    <p style="color: red; font-size: 10px;"
+       *ngIf="userform.get('password_confirmation').hasError('mismatch') && userform.get('password_confirmation').touched">
+      Senhas não conferem!</p>
+    <label for="inputPasswordConfirmation" class="sr-only">Senha:</label>
+    <input style="margin-left: auto; margin-right: auto; margin-top: 0px;" type="password"
+           id="inputPasswordConfirmation"
+           class="form-control col-8" placeholder="Senha"
+           formControlName="password_confirmation"
+           [class.hasError]="(userform.get('password_confirmation').errors || userform.get('password_confirmation').hasError('required')) && userform.get('password_confirmation').touched"
+           [class.hasSuccess]="(userform.get('password_confirmation').valid && !userform.get('password_confirmation').hasError('required')) && userform.get('password_confirmation').touched">
+
+  </div>
+  <button style="margin-left: auto; margin-right: auto;" class="btn btn-lg btn-light btn-block col-8"
+          type="submit" [disabled]="!userform.valid || submitted">Cadastrar!
+  </button>
+</form>

@@ -1,5 +1,5 @@
-<app-navbar></app-navbar>
-<div class="container-fluid">
+<app-navbar *ngIf="loaded != false" [userdata]="userdata"></app-navbar>
+<div *ngIf="loaded != false" class="container-fluid">
   <div class="row">
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
       <div class="sidebar-sticky">
@@ -34,4 +34,5 @@
     </main>
   </div>
 </div>
+<app-dp-loading *ngIf="loaded != true"></app-dp-loading>
 

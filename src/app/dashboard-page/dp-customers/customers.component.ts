@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ClientcustService} from '../Services/ModelServices/clientcust.service';
 import {Clientcust} from '../Models/clientcust.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {SearchService} from '../Services/SearchManager/search.service';
+import {User} from '../../Models/user.model';
 
 @Component({
   selector: 'app-customers',
