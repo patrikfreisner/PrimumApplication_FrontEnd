@@ -5,17 +5,20 @@
   </a>
   <div class="btn-group">
     <div class="btn-group dropleft" role="group">
-      <button type="button" class="btn btn-outline-light btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button type="button" class="btn btn-outline-light btn-sm dropdown-toggle dropdown-toggle-split"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="sr-only">Toggle Dropleft</span>
       </button>
       <div class="dropdown-menu">
         <!-- Dropdown menu links -->
-        <a class="dropdown-item" >Atualizações</a>
-        <a class="dropdown-item" >Opções</a>
+        <a class="dropdown-item">Atualizações</a>
+        <a class="dropdown-item" (click)="open(details, {size: 'lg'})">Opções</a>
         <a class="dropdown-item" style="cursor: pointer;" (click)="signOut()">Sair</a>
         <div class="dropdown-divider"></div>
-        <a *ngIf="current_user.Company.Role.SubscriptionType == 'ADMIN_PRIMUM'" class="dropdown-item" routerLink="/control">Painel de Controle</a>
-        <a *ngIf="current_user.Company.Role.SubscriptionType != ('active' || 'Activated')" class="dropdown-item clickable" (click)="open(aboutSystemContent)">Sobre o meu sistema?</a>
+        <a *ngIf="current_user.Company.Role.SubscriptionType == 'ADMIN_PRIMUM'" class="dropdown-item"
+           routerLink="/control">Painel de Controle</a>
+        <a *ngIf="current_user.Company.Role.SubscriptionType != ('active' || 'Activated')"
+           class="dropdown-item clickable" (click)="open(aboutSystemContent)">Sobre o meu sistema?</a>
       </div>
     </div>
     <button class="btn btn-sm btn-outline-light">
@@ -39,6 +42,243 @@
 
         {{system_info_content}}
       </p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Fechar</button>
+  </div>
+</ng-template>
+
+
+<ng-template #details let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-details-details" *ngIf="!IsEditable">Informações do Cliente!</h4>
+    <h4 class="modal-title" id="modal-details-details2" *ngIf="IsEditable">Editar cliente!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="col-md-12 container">
+        <div class="row">
+          <div class="col-4">
+            <div>
+              <h6 align="center"> Usuario
+                <small>(User)</small>
+              </h6>
+              <hr>
+              <div class="form-row">
+
+                <div class="form-group col-md-12">
+                  <label> Nome: </label>
+                  <input class="form-control col-md-12" type="text" value="{{user.name}}" readonly>
+                </div>
+
+                <div class="form-group col-md-12">
+                  <label> Email: </label>
+                  <input class="form-control col-md-12" type="text" value="{{user.email}}" readonly>
+                </div>
+
+              </div>
+              <br>
+              <div class="col-12" style="background-color: #eee; border-radius: 5px;">
+                <hr>
+
+                <h6 align="center"> Assinatura
+                  <small>(Role)</small>
+                </h6>
+                <div class="form-row">
+                  <form [formGroup]="roleForm">
+                    <select class="form-control col-md-12" id="id" [(ngModel)]="roleId" formControlName="id">
+                      <option *ngFor="let status of roles"
+                              [value]="status.id" [disabled]="!IsEditable"><b>{{status.SubscriptionType}}</b>
+                      </option>
+                    </select>
+                  </form>
+                </div>
+                <hr>
+                <p>
+                  <b>Descrição: </b><br>
+                  <small>{{user.Company.Role.details}}</small>
+                </p>
+                <p *ngIf="user.Company.Role.price">
+                  Valor: R$ {{ toMoney(user.Company.Role.price)}}
+                </p>
+                <p *ngIf="!user.Company.Role.price">
+                  Valor: Não tem valor de assinatura!
+                </p>
+                <hr>
+              </div>
+              <hr>
+              <button class="btn btn-outline-dark col-12" (click)="open(passwordReset, {size: 'lg'})"> Mudar senha!
+              </button>
+            </div>
+          </div> <!-- User information! -->
+          <div class="col-8"> <!-- Company information! -->
+            <div>
+              <h6 align="center"> Empresa
+                <small>(Company)</small>
+              </h6>
+              <hr>
+              <form [formGroup]="compForm" class="form-row">
+
+                <div class="form-group col-md-6">
+                  <label> Nome publico da empresa: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="fantasy_name"
+                         [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Razão social: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="company_name"
+                         [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-5">
+                  <label> Responsavel: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="responsable"
+                         [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-3">
+                  <label> Abertura: </label>
+                  <input class="form-control col-md-12" type="text"
+                         formControlName="foundation_date"
+                         mask="00/00/0000" [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label> Contato: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="company_phone"
+                         mask="(00) 00000-0000" [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> CNPJ: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="cnpj"
+                         mask="00.000.000/0000-00" [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Tipo de comercio: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="company_subject"
+                         [readonly]="!IsEditable">
+                </div>
+
+              </form>
+
+              <h6 align="center"> Pagamento
+                <small>(MOIP)</small>
+              </h6>
+              <hr>
+              <div class="form-row" *ngIf="user.Company.Customer">
+
+                <div class="form-group col-md-6">
+                  <label> Nome: </label>
+                  <input class="form-control col-md-12" type="text" value="{{user.Company.Customer.fullname}}" readonly>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Contato: </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="({{user.Company.Customer.phonecode}}) {{user.Company.Customer.phonenumber}}" readonly>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> CPF: </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="{{user.Company.Customer.cpf | mask: '000.000.000-00'}}" readonly>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Aniversario! </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="{{dateChange(user.Company.Customer.birthdate, 'toHTML') | mask: '00/00/0000'}}"
+                         readonly>
+                </div>
+
+                <div class="form-group col-md-12">
+                  <label> MOIP_ID! </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="{{user.Company.Customer.moip_id}}" readonly>
+                </div>
+
+              </div>
+              <hr>
+              <!--<div class="modal-footer">-->
+              <!--<button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"-->
+              <!--(click)="this.IsEditable = true;">Editar S.O?-->
+              <!--</button>-->
+              <!--<button *ngIf="IsEditable === true" type="button"-->
+              <!--class="btn btn-outline-dark" (click)="updateRole('upd');this.modal.close();">-->
+              <!--Atualizar Informações!-->
+              <!--</button>-->
+              <!--<button *ngIf="IsEditable === true" type="reset" class="btn btn-outline-dark">Limpar!</button>-->
+              <!--</div>-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #passwordReset let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-resetpass"> Alterar senha! </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <div class="row">
+        <h6> Siga os passos a seguir e vamos mudar sua senha!</h6>
+        <hr class="col-12">
+        <form class="col-12" [formGroup]="passwordForm">
+          <br>
+          <p class="alert-primary" *ngIf="verified === true">
+          Senha foi alterada com sucesso!</p>
+          <p style="color: red; font-size: 10px;"
+             *ngIf="passwordForm.get('current_password').hasError('required') && passwordForm.get('current_password').touched">
+            Campo é obrigatorio!!</p>
+          <p style="color: red; font-size: 10px;" *ngIf="notVerified !== ''">
+          A senha atual está incorreta!</p>
+          <label>Senha antiga!</label>
+          <input class="form-control col-12" type="password" placeholder="Senha antiga!"
+                 formControlName="current_password"
+                 [class.hasError]="passwordForm.get('current_password').errors && passwordForm.get('current_password').touched"
+                 [class.hasSuccess]="passwordForm.get('current_password').valid">
+          <br>
+          <p style="color: red; font-size: 10px;"
+             *ngIf="passwordForm.get('new_password').hasError('required') && passwordForm.get('new_password').touched">
+            Campo é obrigatorio!!</p>
+          <p style="color: red; font-size: 10px;"
+             *ngIf="passwordForm.get('new_password').hasError('minlength') && !passwordForm.get('new_password').hasError('required') && passwordForm.get('new_password').touched">
+            Deve conter mais de 8 caracteres!!</p>
+          <label>Nova senha!</label>
+          <input class="form-control col-12" type="password" placeholder="Nova senha!" formControlName="new_password"
+                 [class.hasError]="passwordForm.get('new_password').errors && passwordForm.get('new_password').touched"
+                 [class.hasSuccess]="passwordForm.get('new_password').valid">
+          <br>
+          <p style="color: red; font-size: 10px;"
+             *ngIf="passwordForm.get('confirm_password').hasError('required') && passwordForm.get('confirm_password').touched">
+            Campo é obrigatorio!!</p>
+          <p style="color: red; font-size: 10px;"
+             *ngIf="passwordForm.get('confirm_password').hasError('mismatch') && passwordForm.get('confirm_password').touched">
+            Senhas não conferem!</p>
+          <label>Repita a nova senha!</label>
+          <input class="form-control col-12" type="password" placeholder="Repita a senha!"
+                 formControlName="confirm_password"
+                 [class.hasError]="(passwordForm.get('confirm_password').errors || passwordForm.get('confirm_password').hasError('required')) && passwordForm.get('confirm_password').touched"
+                 [class.hasSuccess]="(passwordForm.get('confirm_password').valid && !passwordForm.get('confirm_password').hasError('required')) && passwordForm.get('confirm_password').touched">
+          <hr>
+
+          <button class="btn btn-dark" (click)="changePassword();" [disabled]="!passwordForm.valid"> Alterar senha!</button>
+        </form>
+      </div>
     </div>
   </div>
   <div class="modal-footer">

@@ -14,7 +14,9 @@ export class CompaniesService {
 
   apiMoipServiceUrl = 'api/companies';
 
-  constructor(private http: Angular2TokenService) {
+  constructor(
+    private http: Angular2TokenService
+  ) {
   }
 
   public getUsersWithoutCompany(): Observable<User[]> {
@@ -44,8 +46,29 @@ export class CompaniesService {
     );
   }
 
+  public getCompanyById(id: number): Observable<Company> {
+    const url = `${this.apiMoipServiceUrl}/${id}`;
+    return this.http.get(url).pipe(
+      map((resp: Response) => {
+        const comp = resp.json();
+        return comp as Company;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
   public createCompany(company: Company): Observable<Company> {
     return this.http.post(this.apiMoipServiceUrl, company).pipe(
+      map((resp: Response) => {
+        const company1 = resp.json();
+        return company1 as Company;
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  public updateCompany(company: Company): Observable<Company> {
+    return this.http.put('api/companies/' + company.id, company).pipe(
       map((resp: Response) => {
         const company1 = resp.json();
         return company1 as Company;

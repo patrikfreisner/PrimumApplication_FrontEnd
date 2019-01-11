@@ -58,6 +58,16 @@ export class AuthService {
     );
   }
 
+  public changePassword(password, password_confirmation, old_password): Observable<Response> {
+    return this.tokenService.updatePassword({
+      password: password,
+      passwordConfirmation: password_confirmation,
+      passwordCurrent: old_password,
+    }).pipe(
+      catchError(this.handleErrors)
+    );
+  }
+
   public signUp(user: User): Observable<Response> {
     return this.tokenService.registerAccount(user as any).pipe(
       catchError(this.handleErrors)

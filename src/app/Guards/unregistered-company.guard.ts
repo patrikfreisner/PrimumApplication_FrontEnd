@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from '@angular/router';
-import {AuthService} from '../Service/auth.service';
+import {Observable} from 'rxjs';
 import {User} from '../Models/user.model';
+import {AuthService} from '../Service/auth.service';
 import {Angular2TokenService} from 'angular2-token';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
-
+export class UnregisteredCompanyGuard implements CanActivate {
   current_user: User;
   have_company: boolean;
 
@@ -33,28 +33,20 @@ export class AuthGuard implements CanActivate {
     // Tratamento de problemas com usuarios sem Company associada!
     let user_role = null;
     try {
-      user_role = this.current_user.Company.Role.SubscriptionType;
+      user_role = this.current_user.Company;
+      if (this.authService.isSignedIn() && user_role === undefined) {
+        return true;
+      } else {
+        this.router.navigate(['/portal/signin']);
+      }
     } catch (e) {
       if (e.name === 'TypeError') {
-        this.router.navigate(['/portal/signup/company']);
+        console.log('Erro no try catch company');
+        this.router.navigate(['/portal/signin']);
+        return false;
       }
     }
     // Fim do tratamento de problemas com usuarios sem Company associada!
-
-    if (this.authService.isSignedIn() && (user_role !== 'user_not_activated_yet' && user_role !== 'user_not_active')) {
-      return true;
-    } else {
-      if (user_role === 'user_not_activated_yet') {
-        this.router.navigate(['/portal/signin/waiting']);
-      } else {
-        // this.authService.redirectUrl = url;
-        this.tokenService.signOut().subscribe(
-          () => console.log('Você foi desconectado! - Por favor recarregue a pagina'),
-          () => console.log('Erro!! auth.guard - Usuario nao foi desconectado!')
-        );
-        this.router.navigate(['/portal/signin']);
-      }
-    }
   }
 
   async userData(): Promise<void> {

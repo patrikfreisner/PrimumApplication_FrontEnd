@@ -19,6 +19,9 @@ import {AuthGuard} from '../Guards/auth.guard';
 import {NotAuthenticatedGuard} from '../Guards/not-authenticated.guard';
 import {SpCompanyComponent} from '../primum-portal/sign-up-page/sp-company/sp-company.component';
 import {SpUserComponent} from '../primum-portal/sign-up-page/sp-user/sp-user.component';
+import {WaitingForRegisterComponent} from '../primum-portal/SharedPages/waiting-for-register/waiting-for-register.component';
+import {UnregisteredCompanyGuard} from '../Guards/unregistered-company.guard';
+import {RegisteredWithoutMoipIDGuard} from '../Guards/registered-without-moip-id.guard';
 
 const routes: Routes = [
   {path: '', redirectTo: 'portal/signin', pathMatch: 'full'},
@@ -37,8 +40,9 @@ const routes: Routes = [
       ]
   },
   {
-    path: 'portal/signup/company', component: SignUpPageComponent, children: [
-      {path: '', component: SpCompanyComponent}
+    path: 'portal', component: SignUpPageComponent, children: [
+      {path: 'signup/company', component: SpCompanyComponent, canActivate: [UnregisteredCompanyGuard]},
+      {path: 'signin/waiting', component: WaitingForRegisterComponent, canActivate: [RegisteredWithoutMoipIDGuard]}
     ]
   },
   {

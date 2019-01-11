@@ -4,20 +4,21 @@
       <ng-template ngbTabTitle> Clientes em pré-cadastro!</ng-template>
       <ng-template ngbTabContent>
         <div class="row">
-          <h1 align="center" class="col-md-12"> Clientes ativos! </h1>
+          <h1 align="center" class="col-md-12"> Clientes esperando contato! </h1>
           <hr class="col-sm-10">
           <div class="col-md-12 container">
             <table class="table table-striped">
               <thead>
               <tr>
+                <td></td>
                 <th>
                   Nome completo
                 </th>
                 <th>
-                  Email
+                  Nome da empresa
                 </th>
                 <th>
-                  Criado em:
+                  Fone:
                 </th>
                 <th colspan="3">
                 </th>
@@ -26,33 +27,118 @@
               <tbody>
               <tr *ngFor="let user of users">
                 <td>
+                  #{{user.id}}
+                </td>
+                <td>
                   {{user.name}}
                 </td>
                 <td>
-                  {{user.email}}
+                  {{user.Company.fantasy_name}}
                 </td>
                 <td>
-                  {{user.created_at | date: 'dd/MM/yyyy - HH:mm:ss'}}
+                  {{user.Company.company_phone | mask: '(00) 00000-0000'}}
                 </td>
                 <td>
-                  <button *ngIf="!user.Company" class="btn btn-default btn-dark col-12"
-                          (click)="getMoipCustomer(cust.id, modalGetCustomer)"> Cadastrar Empresa!
+                  <button class="btn btn-default btn-dark col-12"
+                          *ngIf="!user.Company.Customer"
+                          (click)="setCompany(user.Company, chooseCustomer);">
+                    Casdastrar Pagamento(Moip)!
                   </button>
-                  <button *ngIf="user.Company" class="btn btn-default btn-dark col-12"
-                          (click)="getMoipCustomer(cust.id, modalGetCustomer)"> Empresa cadastrada!
+                  <button class="btn btn-default btn-outline-dark col-12"
+                          *ngIf="user.Company.Customer">
+                    Pagamento(Moip) cadastrado!
                   </button>
+                </td>
+
+                <td>
+                  <button class="btn btn-default btn-dark col-12"
+                          *ngIf="user.Company.Role_id === 2"
+                          (click)="setRole(user.Company, chooseRole);"> Cadastrar assinatura! (ROLE)
+                  </button>
+                  <button class="btn btn-default btn-dark col-12"
+                          *ngIf="user.Company.Role_id !== 2"
+                          (click)="setRole(user.Company, chooseRole);"> Assinatura(ROLE) cadastrada!
+                  </button>
+                </td>
+                <!--<td>-->
+                <!--<button class="btn btn-default btn-dark col-10"> Deletar </button>-->
+                <!--</td>-->
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="formCustomer">
+      <ng-template ngbTabTitle> Clientes Primum!</ng-template>
+      <ng-template ngbTabContent>
+        <div class="row">
+          <h1 align="center" class="col-md-12"> Todos os clientes! </h1>
+          <hr class="col-sm-10">
+          <div class="input-group mb-3 col-5">
+            <div class="input-group-prepend">
+              <span class="input-group-text" style="padding-right: 1px;"> Nome do cliente!</span>
+            </div>
+            <input type="text" class="form-control" placeholder="Pesquise o cliente!" #searchClientso>
+            <div class="input-group-append">
+              <button class="btn btn-default btn-outline-dark" type="button"
+                      (click)="getUsersBySearch('name', searchClientso.value)">Pesquisar!
+              </button>
+              <button class="btn btn-default btn-outline-dark" type="reset" (click)="getUsersBySearch('name', '');">Limpar!
+              </button>
+            </div>
+          </div>
+          <div class="col-md-12 container">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <td></td>
+                <th>
+                  Nome completo
+                </th>
+                <th>
+                  Nome da empresa
+                </th>
+                <th>
+                  Pagamento
+                </th>
+                <th>
+                  Tipo de assinatura
+                </th>
+                <th colspan="3">
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let user of allUsers">
+                <td>
+                  #{{user.id}}
+                </td>
+                <td>
+                  {{user.name}} <br>
+                  <small>{{user.email}}</small>
+                </td>
+                <td>
+                  <p *ngIf="user.Company">{{user.Company.fantasy_name}}</p>
+                  <p *ngIf="!user.Company">Não tem empresa cadastrada!</p>
+                </td>
+                <td *ngIf="!user.Company">
                 </td>
                 <td *ngIf="user.Company">
-                  <button *ngIf="!user.Company.Customer" class="btn btn-default btn-dark col-12"
-                          (click)="getMoipCustomer(cust.id, modalGetCustomer)"> Casdastrar Pagamento(Moip)!
-                  </button>
-                  <button *ngIf="user.Company.Customer" class="btn btn-default btn-dark col-12"
-                          (click)="getMoipCustomer(cust.id, modalGetCustomer)"> Pagamento cadastrado (Moip)!
-                  </button>
+                  <p *ngIf="user.Company.Customer">{{user.Company.Customer.moip_id}}</p>
+                  <p *ngIf="!user.Company.Customer">Não tem pagamento cadastrado!</p>
                 </td>
                 <td>
-                  <button class="btn btn-default btn-dark col-10"
-                          (click)="getMoipCustomer(cust.id,modalDeleteCustomer)"> Deletar
+                  <p *ngIf="user.Company">
+                    <small>{{user.Company.Role.details}}</small>
+                  </p>
+                  <p *ngIf="!user.Company">NÃO CADASTRADO!</p>
+                </td>
+                <td>
+                  <button class="btn btn-default btn-dark col-12"
+                          (click)="getUserById(user.id, details)">
+                    Detalhes! / Alterar dados!
                   </button>
                 </td>
               </tr>
@@ -62,17 +148,315 @@
         </div>
       </ng-template>
     </ngb-tab>
-    <ngb-tab id="formCustomer">
-      <ng-template ngbTabTitle> Alterar dados de empresas clientes! </ng-template>
-      <ng-template #scrollnone ngbTabContent>
-        <div class="row">
-          <h1 align="center" class="col-md-12"> Novo cliente! </h1>
-          <hr class="col-sm-10">
-          <div class="col-sm-4 container" [style]="{'max-height':screen }">
-
-          </div>
-        </div>
-      </ng-template>
-    </ngb-tab>
   </ngb-tabset>
 </div>
+
+
+<ng-template #chooseCustomer let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-details-choosec">Escolha o cliente!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Pesquise nome do cliente!" #searchClientCust>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button"
+                  (click)="getClientBySearch('fullname',searchClientCust.value)">Pesquisar!
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12 container">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th></th>
+            <th>
+              Nome
+            </th>
+            <th>
+              CPF
+            </th>
+            <th>
+              N° Celular
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let cust of customersMoip">
+            <td>
+              #{{cust.id}}
+            </td>
+            <td>
+              {{cust.fullname}}
+            </td>
+            <td>
+              {{cust.cpf | mask:'000.000.000-00'}}
+            </td>
+            <td>
+              ({{cust.phonecode}}) {{cust.phonenumber | mask: '00000-0000'}}
+            </td>
+            <td>
+              <button class="btn btn-default btn-dark col-12"
+                      (click)="setCustomerToNumber(cust.id)" [disabled]="cust.id === choosedCustomer"> Selecionar!
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="btn btn-default btn-dark col-12" (click)="updateCompanyMoip(); this.modal.close();"> Salvar!
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #chooseRole let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-details-chooserole">Escolha o cliente!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Pesquise nome do cliente!" #searchRole>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button"
+                  (click)="getClientBySearch('details',searchRole.value)">Pesquisar!
+          </button>
+        </div>
+      </div>
+      <div class="col-md-12 container">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th></th>
+            <th>
+              DB_Identifier
+            </th>
+            <th>
+              Detalhes!
+            </th>
+            <th>
+              Valor da assinatura!
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let role of roles">
+            <td>
+              #{{role.id}}
+            </td>
+            <td>
+              {{role.SubscriptionType}}
+            </td>
+            <td>
+              {{role.details}}
+            </td>
+            <td>
+              R$ {{role.price}}
+            </td>
+            <td>
+              <button class="btn btn-default btn-dark col-12"
+                      (click)="setRoleToNumber(role.id)" [disabled]="role.id === choosedRole"> Selecionar!
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="btn btn-default btn-dark col-12" (click)="updateRole(); this.modal.close();"> Salvar!</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #details let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-details-details" *ngIf="!IsEditable">Informações do Cliente!</h4>
+    <h4 class="modal-title" id="modal-details-details2" *ngIf="IsEditable">Editar cliente!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div class="col-md-12 container">
+        <div class="row">
+          <div class="col-4">
+            <div>
+              <h6 align="center"> Usuario
+                <small>(User)</small>
+              </h6>
+              <hr>
+              <div class="form-row">
+
+                <div class="form-group col-md-12">
+                  <label> Nome: </label>
+                  <input class="form-control col-md-12" type="text" value="{{user.name}}" readonly>
+                </div>
+
+                <div class="form-group col-md-12">
+                  <label> Email: </label>
+                  <input class="form-control col-md-12" type="text" value="{{user.email}}" readonly>
+                </div>
+
+              </div>
+              <br>
+              <div class="col-12" style="background-color: #eee; border-radius: 5px;">
+                <hr>
+
+                <h6 align="center"> Assinatura
+                  <small>(Role)</small>
+                </h6>
+                <div class="form-row">
+                  <form [formGroup]="roleForm">
+                    <select class="form-control col-md-12" id="id" [(ngModel)]="roleId" formControlName="id">
+                      <option *ngFor="let status of roles"
+                              [value]="status.id" [disabled]="!IsEditable"><b>{{status.SubscriptionType}}</b>
+                      </option>
+                    </select>
+                  </form>
+                </div>
+                <hr>
+                <p>
+                  <b>Descrição: </b><br>
+                  <small>{{user.Company.Role.details}}</small>
+                </p>
+                <p *ngIf="user.Company.Role.price">
+                  Valor: R$ {{ toMoney(user.Company.Role.price)}}
+                </p>
+                <p *ngIf="!user.Company.Role.price">
+                  Valor: Não tem valor de assinatura!
+                </p>
+                <hr>
+              </div>
+              <hr>
+              <!--<div class="modal-footer">-->
+              <!--<button class="btn btn-default btn-dark" *ngIf="IsEditable === false"-->
+              <!--(click)="openModal(pdfView, 'lg');this.modal.close();">Versão para-->
+              <!--impressão!-->
+              <!--</button>-->
+              <!--<button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"-->
+              <!--(click)="this.IsEditable = true;">Editar S.O?-->
+              <!--</button>-->
+              <!--<button *ngIf="IsEditable === true" type="button"-->
+              <!--class="btn btn-outline-dark" (click)="updateServiceOrder(); this.modal.close();">-->
+              <!--Atualizar S.O!-->
+              <!--</button>-->
+              <!--<button *ngIf="IsEditable === true" type="reset" class="btn btn-outline-dark">Limpar!</button>-->
+              <!--</div>-->
+            </div>
+          </div> <!-- User information! -->
+          <div class="col-8"> <!-- Company information! -->
+            <div>
+              <h6 align="center"> Empresa
+                <small>(Company)</small>
+              </h6>
+              <hr>
+              <form [formGroup]="compForm" class="form-row">
+
+                <div class="form-group col-md-6">
+                  <label> Nome publico da empresa: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="fantasy_name"
+                         [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Razão social: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="company_name"
+                         [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-5">
+                  <label> Responsavel: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="responsable"
+                         [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-3">
+                  <label> Abertura: </label>
+                  <input class="form-control col-md-12" type="text"
+                         formControlName="foundation_date"
+                         mask="00/00/0000" [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-4">
+                  <label> Contato: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="company_phone"
+                         mask="(00) 00000-0000" [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> CNPJ: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="cnpj"
+                         mask="00.000.000/0000-00" [readonly]="!IsEditable">
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Tipo de comercio: </label>
+                  <input class="form-control col-md-12" type="text" formControlName="company_subject"
+                         [readonly]="!IsEditable">
+                </div>
+
+              </form>
+
+              <h6 align="center"> Pagamento
+                <small>(MOIP)</small>
+              </h6>
+              <hr>
+              <div class="form-row" *ngIf="user.Company.Customer">
+
+                <div class="form-group col-md-6">
+                  <label> Nome: </label>
+                  <input class="form-control col-md-12" type="text" value="{{user.Company.Customer.fullname}}" readonly>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Contato: </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="({{user.Company.Customer.phonecode}}) {{user.Company.Customer.phonenumber}}" readonly>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> CPF: </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="{{user.Company.Customer.cpf | mask: '000.000.000-00'}}" readonly>
+                </div>
+
+                <div class="form-group col-md-6">
+                  <label> Aniversario! </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="{{dateChange(user.Company.Customer.birthdate, 'toHTML') | mask: '00/00/0000'}}"
+                         readonly>
+                </div>
+
+                <div class="form-group col-md-12">
+                  <label> MOIP_ID! </label>
+                  <input class="form-control col-md-12" type="text"
+                         value="{{user.Company.Customer.moip_id}}" readonly>
+                </div>
+
+              </div>
+              <hr>
+              <div class="modal-footer">
+                <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"
+                        (click)="this.IsEditable = true;">Editar S.O?
+                </button>
+                <button *ngIf="IsEditable === true" type="button"
+                        class="btn btn-outline-dark" (click)="updateRole('upd');this.modal.close();">
+                  Atualizar Informações!
+                </button>
+                <button *ngIf="IsEditable === true" type="reset" class="btn btn-outline-dark">Limpar!</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -38,10 +38,7 @@ export class SpCompanyComponent implements OnInit {
 
     this.company = this.companyForm.value;
     this.companiesService.createCompany(this.company).subscribe(
-      () => {
-        alert('foi amigao!');
-        this.router.navigate(['/portal/signup/company']);
-      },
+      () => this.router.navigate(['/portal/signin/waiting']),
       (error) => {
         this.submitted = false;
         alert('Um erro ocorreu!');

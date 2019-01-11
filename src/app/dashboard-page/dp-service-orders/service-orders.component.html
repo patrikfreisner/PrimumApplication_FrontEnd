@@ -878,7 +878,7 @@
             <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"
                     (click)="this.IsEditable = true;">Editar S.O?
             </button>
-            <button *ngIf="IsEditable === true" [disabled]="soForm.untouched" type="button"
+            <button *ngIf="IsEditable === true" type="button"
                     class="btn btn-outline-dark" (click)="updateServiceOrder(); this.modal.close();">
               Atualizar S.O!
             </button>

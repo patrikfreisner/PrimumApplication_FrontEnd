@@ -11,6 +11,7 @@ export class Company {
     company_phone: string;
     Role: Role;
     Customer: Customer;
+    Customer_id: number;
     Role_id: number;
     created_at?: string;
     update_at?: string;
