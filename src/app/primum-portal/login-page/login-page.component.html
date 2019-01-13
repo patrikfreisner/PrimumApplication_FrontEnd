@@ -1,6 +1,6 @@
 <div id="body" (window:resize)="onResize()">
   <form [formGroup]="userform" class="form-signin">
-    <img class="mb-4" src="../../../assets/LOGO_PRIMUM_WHITE.png" alt="" width="200" height="200">
+    <img class="mb-4" src="../../../assets/LOGO_PRIMUM_WHITE.png" routerLink="" style="cursor: pointer;" alt="" width="200" height="200">
 
     <div *ngIf="formErrors" class="alert alert-danger">
       <ul>

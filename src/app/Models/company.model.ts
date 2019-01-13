@@ -13,6 +13,8 @@ export class Company {
     Customer: Customer;
     Customer_id: number;
     Role_id: number;
+    company_logo: string;
+    logo_size: string;
     created_at?: string;
     update_at?: string;
     id?: number;

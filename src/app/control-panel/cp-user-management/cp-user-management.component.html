@@ -85,7 +85,8 @@
               <button class="btn btn-default btn-outline-dark" type="button"
                       (click)="getUsersBySearch('name', searchClientso.value)">Pesquisar!
               </button>
-              <button class="btn btn-default btn-outline-dark" type="reset" (click)="getUsersBySearch('name', '');">Limpar!
+              <button class="btn btn-default btn-outline-dark" type="reset" (click)="getUsersBySearch('name', '');">
+                Limpar!
               </button>
             </div>
           </div>
@@ -279,6 +280,11 @@
   <div class="modal-header">
     <h4 class="modal-title" id="modal-details-details" *ngIf="!IsEditable">Informações do Cliente!</h4>
     <h4 class="modal-title" id="modal-details-details2" *ngIf="IsEditable">Editar cliente!</h4>
+
+    <img *ngIf="user.Company.company_logo.indexOf('../../../') !== 0" class="img-thumbnail"
+         src="data:image/png;base64,{{user.Company.company_logo}}"
+         width="80" height="50" style="margin-left: 10px;">
+
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>

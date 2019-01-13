@@ -1,6 +1,8 @@
 <nav class="navbar navbar-light bg-dark fixed-top">
   <a class="navbar-brand" routerLink="">
-    <img src={{comp_logo}} width="30" height="30" class="d-inline-block align-top" alt="">
+    <img *ngIf="comp_logo.indexOf('../../../') !== 0" class="top-logo" src="data:image/png;base64,{{comp_logo}}"
+         width="{{logo_sizeW}}" height="{{logo_sizeH}}">
+    <img *ngIf="comp_logo.indexOf('../../../') === 0" class="top-logo" src="{{comp_logo}}" width="{{logo_sizeW}}" height="{{logo_sizeH}}">
     <b style="color: white"> {{current_user.Company.fantasy_name}}</b>
   </a>
   <div class="btn-group">
@@ -218,6 +220,27 @@
               <!--</div>-->
             </div>
           </div>
+          <div class="col-12">
+            <hr>
+            <form [formGroup]="imageForm" class="col-6">
+              <img *ngIf="imageSrc !== null" align="center" src="data:image/png;base64,{{imageSrc}}"
+                   style="max-width:100px;max-height:100px"/>
+              <br>
+              <label>
+                Caso sua logo não esteja ajustada tente outra configuração!
+              </label>
+              <select class="form-control" id="status" [(ngModel)]="comp_size_number" formControlName="logo_size">
+                <option *ngFor="let status of comp_size"
+                        [value]="status.value">{{status.label}}
+                </option>
+              </select>
+              <br>
+              <input name="imageUrl" type="file" accept="image/*" formControlName="imageData"
+                     (change)="handleFileSelect($event)"/>
+              <hr>
+              <button class="btn" (click)="updateLogo()"> Mudar logo da empresa!</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -240,12 +263,12 @@
         <form class="col-12" [formGroup]="passwordForm">
           <br>
           <p class="alert-primary" *ngIf="verified === true">
-          Senha foi alterada com sucesso!</p>
+            Senha foi alterada com sucesso!</p>
           <p style="color: red; font-size: 10px;"
              *ngIf="passwordForm.get('current_password').hasError('required') && passwordForm.get('current_password').touched">
             Campo é obrigatorio!!</p>
           <p style="color: red; font-size: 10px;" *ngIf="notVerified !== ''">
-          A senha atual está incorreta!</p>
+            A senha atual está incorreta!</p>
           <label>Senha antiga!</label>
           <input class="form-control col-12" type="password" placeholder="Senha antiga!"
                  formControlName="current_password"
@@ -276,7 +299,8 @@
                  [class.hasSuccess]="(passwordForm.get('confirm_password').valid && !passwordForm.get('confirm_password').hasError('required')) && passwordForm.get('confirm_password').touched">
           <hr>
 
-          <button class="btn btn-dark" (click)="changePassword();" [disabled]="!passwordForm.valid"> Alterar senha!</button>
+          <button class="btn btn-dark" (click)="changePassword();" [disabled]="!passwordForm.valid"> Alterar senha!
+          </button>
         </form>
       </div>
     </div>

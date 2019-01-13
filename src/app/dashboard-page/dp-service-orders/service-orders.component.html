@@ -363,19 +363,23 @@
               <tbody>
               <tr>
                 <td style="border: 1px solid;padding: 1px 5px;">
-                  <img class="top-logo" src="../../../assets/LOGO_PRIMUM_BLACK.png" width="100" width="100">
+                  <img *ngIf="comp_logo.indexOf('../../../') !== 0" class="top-logo" src="data:image/png;base64,{{comp_logo}}" width="100" width="100">
+                  <img *ngIf="comp_logo.indexOf('../../../') === 0" class="top-logo" src="{{comp_logo}}" width="100" width="100">
                 </td>
                 <td style="border: 1px solid;padding: 1px 5px;">
-                  <p style="text-transform: uppercase; font-size: 24px;"><b>{{current_user.Company.fantasy_name}}</b></p>
+                  <p style="text-transform: uppercase; font-size: 24px;"><b>{{current_user.Company.fantasy_name}}</b>
+                  </p>
                   <p style="text-align: center;">
-                    &nbsp;{{current_user.Company.company_phone || 'Sem numero cadastrado'}} | {{current_user.name}}
+                    &nbsp;{{current_user.Company.company_phone | mask: '(00) 000000000' || 'Sem numero cadastrado'}} | {{current_user.name}}
                   </p>
                   <p style="text-transform: uppercase;">
                     <strong>
                       ORDEM DE SERVIÇOS
                       <br>
                       <small style="text-transform: uppercase;font-size: 12px;">{{service_order.status}}</small>
-                      <small *ngIf="service_order.status === 'Fechado'" style="text-transform: uppercase;font-size: 12px;"> | {{service_order.order_end_date}}</small>
+                      <small *ngIf="service_order.status === 'Fechado'"
+                             style="text-transform: uppercase;font-size: 12px;"> | {{service_order.order_end_date}}
+                      </small>
                     </strong>
                   </p>
                 </td>
@@ -431,7 +435,7 @@
                 </td>
               </tr>
               <tr>
-                <td  width="20%" style="border: 1px solid;padding: 1px 5px;">
+                <td width="20%" style="border: 1px solid;padding: 1px 5px;">
                   <strong>Endereço:</strong>
                 </td>
                 <td colspan="3" style="border: 1px solid;padding: 1px 5px;text-align:left;">
@@ -518,7 +522,8 @@
                   {{service_order.details}}
                 </td>
               </tr>
-              <tr *ngIf="!service_order.advance_payment_value === null || !(service_order.advance_payment_value === '')">
+              <tr
+                *ngIf="!service_order.advance_payment_value === null || !(service_order.advance_payment_value === '')">
                 <td width="20%" style="border: 1px solid;padding: 1px 5px;">
                   <strong>Cobrança antecipada:</strong>
                 </td>
@@ -847,7 +852,7 @@
             <div class="form-group col-md-12">
               <label> Solução: </label>
               <textarea class="form-control col-md-12" type="text" formControlName="solution"
-                        [readonly]="!IsEditable" ></textarea>
+                        [readonly]="!IsEditable"></textarea>
             </div>
             <div class="form-group col-md-4">
               <label> Data de Abertura: </label>
@@ -872,7 +877,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-default btn-dark" *ngIf="IsEditable === false" (click)="openModal(pdfView, 'lg');this.modal.close();">Versão para
+            <button class="btn btn-default btn-dark" *ngIf="IsEditable === false"
+                    (click)="openModal(pdfView, 'lg');this.modal.close();">Versão para
               impressão!
             </button>
             <button *ngIf="IsEditable === false" type="button" class="btn btn-outline-dark"

@@ -12,6 +12,7 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import * as $ from 'jquery';
 import {AuthService} from '../../Service/auth.service';
 import {User} from '../../Models/user.model';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-service-orders',
@@ -20,6 +21,7 @@ import {User} from '../../Models/user.model';
 })
 export class ServiceOrdersComponent implements OnInit {
 
+  comp_logo = '../../../assets/LOGO_PRIMUM_BLACK.png';
   page: number;
   clientcusts: Clientcust[];
   clientcust: Clientcust;
@@ -68,6 +70,9 @@ export class ServiceOrdersComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.current_user.Company.company_logo !== null) {
+      this.comp_logo = this.current_user.Company.company_logo;
+    }
   }
 
   public toDocType(): void {
@@ -120,10 +125,11 @@ export class ServiceOrdersComponent implements OnInit {
     this.getClientCustBySearch('');
   }
 
-  public userData(): void {
-    this.authService.getCurrentUserData().then(
+  public async userData(): Promise<void> {
+    return await this.authService.getCurrentUserData().then(
       (user) => {
         this.current_user = user;
+        this.comp_logo = user.Company.company_logo;
       }
     );
   }

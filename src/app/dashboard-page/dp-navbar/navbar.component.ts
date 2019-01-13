@@ -6,6 +6,8 @@ import {User} from '../../Models/user.model';
 import {Form, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HelpersModule} from '../../Helpers/helpers.module';
 import {Role} from '../../Models/role.model';
+import {Company} from '../../Models/company.model';
+import {CompaniesService} from '../../control-panel/Services/Companies/companies.service';
 
 @Component({
   selector: 'app-navbar',
@@ -33,12 +35,29 @@ export class NavbarComponent implements OnInit {
   IsEditable: boolean;
   verified: boolean;
   notVerified: string;
+  imageSrc: any;
+  imageForm: FormGroup;
+  comp_size = [
+    {
+      label: 'Tamanho 30x30 px',
+      value: '3030'
+    },
+    {
+      label: 'Tamanho 30x60 px',
+      value: '3060'
+    }
+  ];
+  comp_size_number: string;
+  logo_sizeW: number;
+  logo_sizeH: number;
+
 
   constructor(
     private fb: FormBuilder,
     private modalService: ModalService,
     private authService: AuthService,
     private helperService: HelpersModule,
+    private companiesService: CompaniesService,
     private router: Router) {
     this.IsEditable = false;
     this.formServiceOrderBuilder();
@@ -56,10 +75,83 @@ export class NavbarComponent implements OnInit {
     this.roles.push(this.userdata.Company.Role);
     this.verified = false;
     this.notVerified = '';
+    this.imageSrc = this.current_user.Company.company_logo;
+    this.imageForm = this.fb.group({
+      imageData: [''],
+      logo_size: [''],
+    });
+    if (this.current_user.Company.company_logo !== null) {
+      this.comp_logo = this.current_user.Company.company_logo;
+    }
+
+    this.comp_size_number = this.userdata.Company.logo_size;
     // this.userData();
+
+
+    if (this.userdata.Company.logo_size === '3030') {
+      this.logo_sizeH = 30;
+      this.logo_sizeW = 30;
+    } else if (this.userdata.Company.logo_size === '3060') {
+      this.logo_sizeH = 30;
+      this.logo_sizeW = 60;
+    }
+  }
+
+  public check(): void {
+    let data = {
+      imageData: null
+    };
+    data = this.imageForm.value;
+    alert(' ////// ' + data.imageData);
+  }
+
+  public _handleReaderLoaded(e) {
+    this.imageSrc = btoa(e.target.result);
+    console.log(btoa(e.target.result));
+  }
+
+  public handleFileSelect(evt) {
+    const file = evt.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = this._handleReaderLoaded.bind(this);
+      reader.readAsBinaryString(file);
+    }
+  }
+
+  public updateLogo(): void {
+    let company: any;
+
+    company = {
+      cnpj: this.current_user.Company.cnpj,
+      fantasy_name: this.current_user.Company.fantasy_name,
+      company_name: this.current_user.Company.company_name,
+      responsable: this.current_user.Company.responsable,
+      foundation_date: this.current_user.Company.foundation_date,
+      company_subject: this.current_user.Company.company_subject,
+      company_phone: this.current_user.Company.company_phone,
+      company_logo: this.imageSrc,
+      logo_size: this.imageForm.get('logo_size').value,
+      Customer_id: this.current_user.Company.Customer_id,
+      Role_id: this.current_user.Company.Role_id,
+      id: this.current_user.Company.id,
+    };
+
+
+    this.companiesService.updateCompany(company as Company).subscribe(
+      () => {
+        alert('Logo alterada, por favor atualize a pagina!');
+      },
+      (error) => {
+        alert('Um erro ocorreu! // ' + error);
+      }
+    );
   }
 
   open(content, options: {}) {
+    this.imageForm.patchValue({logo_size: this.userdata.Company.logo_size});
     this.formPasswordChangeBuilder();
     this.notVerified = '';
     this.verified = false;
@@ -73,23 +165,6 @@ export class NavbarComponent implements OnInit {
   public dateChange(str: string, type: string): string {
     return this.helperService.dateChange(str, type);
   }
-
-  public verififyInformations(info1, info2): void {
-    if ((info2 === this.current_user.Company.Customer.cpf) &&
-      (info1 === this.dateChange(this.current_user.Company.Customer.birthdate, 'toHTML'))) {
-      this.verified = true;
-    } else {
-      this.notVerified = 'Dados informados estão incorretos!';
-    }
-  }
-
-  // public userData(): void {
-  //   this.authService.getCurrentUserData().subscribe(
-  //     (user) => {
-  //       this.current_user = user;
-  //     }
-  //   );
-  // }
 
   public signOut(): void {
     this.authService.signOut().subscribe(
@@ -145,6 +220,7 @@ export class NavbarComponent implements OnInit {
       foundation_date: [''],
       company_subject: [''],
       company_phone: [''],
+      company_logo: [''],
       Role_id: [''],
     });
   }

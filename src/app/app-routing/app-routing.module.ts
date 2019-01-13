@@ -22,15 +22,19 @@ import {SpUserComponent} from '../primum-portal/sign-up-page/sp-user/sp-user.com
 import {WaitingForRegisterComponent} from '../primum-portal/SharedPages/waiting-for-register/waiting-for-register.component';
 import {UnregisteredCompanyGuard} from '../Guards/unregistered-company.guard';
 import {RegisteredWithoutMoipIDGuard} from '../Guards/registered-without-moip-id.guard';
+import {WelcomePageComponent} from '../primum-portal/welcome-page/welcome-page.component';
+import {ContactPageComponent} from '../primum-portal/contact-page/contact-page.component';
+import {ProductsPageComponent} from '../primum-portal/products-page/products-page.component';
 
 const routes: Routes = [
-  {path: '', redirectTo: 'portal/signin', pathMatch: 'full'},
+  {path: '', redirectTo: 'portal', pathMatch: 'full'},
   {
     path: 'portal', component: PrimumPageComponent, canActivate: [NotAuthenticatedGuard],
     children:
       [
-        {path: '', redirectTo: 'signin', pathMatch: 'full'},
-        // {path: '', component: PrimumPageComponent},
+        {path: '*', redirectTo: '', pathMatch: 'full'},
+        {path: '', component: WelcomePageComponent},
+        {path: 'products', component: ProductsPageComponent},
         {path: 'signin', component: LoginPageComponent},
         {
           path: 'signup', component: SignUpPageComponent, children: [

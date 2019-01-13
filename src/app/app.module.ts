@@ -35,6 +35,9 @@ import { CpUserManagementComponent } from './control-panel/cp-user-management/cp
 import { SpCompanyComponent } from './primum-portal/sign-up-page/sp-company/sp-company.component';
 import { SpUserComponent } from './primum-portal/sign-up-page/sp-user/sp-user.component';
 import { WaitingForRegisterComponent } from './primum-portal/SharedPages/waiting-for-register/waiting-for-register.component';
+import { WelcomePageComponent } from './primum-portal/welcome-page/welcome-page.component';
+import { ContactPageComponent } from './primum-portal/contact-page/contact-page.component';
+import { ProductsPageComponent } from './primum-portal/products-page/products-page.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +60,9 @@ import { WaitingForRegisterComponent } from './primum-portal/SharedPages/waiting
     SpCompanyComponent,
     SpUserComponent,
     WaitingForRegisterComponent,
+    WelcomePageComponent,
+    ContactPageComponent,
+    ProductsPageComponent,
   ],
   imports: [
     BrowserModule,
