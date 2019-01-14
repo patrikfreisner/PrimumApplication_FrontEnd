@@ -39,7 +39,7 @@ export class CustomersComponent implements OnInit {
     this.modalService.open(content);
   }
 
-  private pageNext(): void {
+  public pageNext(): void {
     this.page += 1;
     this.getCustomers(this.page);
     if (this.customers.length === 0) {
@@ -47,7 +47,7 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  private pageBack(): void {
+  public pageBack(): void {
     if (this.page > 1) {
       this.page -= 1;
       this.getCustomers(this.page);

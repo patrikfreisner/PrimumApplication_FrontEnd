@@ -12,7 +12,6 @@ import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import * as $ from 'jquery';
 import {AuthService} from '../../Service/auth.service';
 import {User} from '../../Models/user.model';
-import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-service-orders',
@@ -103,7 +102,7 @@ export class ServiceOrdersComponent implements OnInit {
     });
   }
 
-  private pageNext(): void {
+  public pageNext(): void {
     this.page += 1;
     this.getServiceOrders(this.page);
     if (this.serviceorders.length === 0) {
@@ -111,7 +110,7 @@ export class ServiceOrdersComponent implements OnInit {
     }
   }
 
-  private pageBack(): void {
+  public pageBack(): void {
     if (this.page > 1) {
       this.page -= 1;
       this.getServiceOrders(this.page);
