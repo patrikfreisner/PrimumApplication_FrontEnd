@@ -6,8 +6,8 @@ export class User {
     nickname: string;
     password: string;
     password_confirmation: string;
-    Company: Company;
-    Company_id: number;
+    company: Company;
+    company_id: number;
     id?: number;
     created_at: string;
     updated_at: string;

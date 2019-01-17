@@ -62,7 +62,7 @@ export class MoipPaymentService {
     return this.http.get(this.apiMoipServiceUrl).pipe(
       tap((payments: PaymentBankSlip) => {
         return payments;
-        console.log('Loaded Order');
+        console.log('Loaded order');
       }),
       catchError(this.handleError)
     );

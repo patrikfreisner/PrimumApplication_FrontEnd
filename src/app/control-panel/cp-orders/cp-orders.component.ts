@@ -91,7 +91,7 @@ export class CpOrdersComponent implements OnInit {
   private addOrder(): void {
     this.order = this.orderMoipForm.value;
     this.order.item_price = this.order.item_price + '00';
-    this.order.Customer_id = this.customer.id;
+    this.order.customer_id = this.customer.id;
 
     this.orderService.createMoipOrder(this.order)
       .subscribe(
@@ -107,7 +107,7 @@ export class CpOrdersComponent implements OnInit {
 
   private addPayment(): void {
     this.payment = this.paymentMoipForm.value;
-    this.payment.Order_id = this.order.id;
+    this.payment.order_id = this.order.id;
     this.payment.expirationdate = this.dateChange(this.payment.expirationdate, 'toDB');
 
     this.paymentService.createMoipPayment(this.payment)
@@ -151,7 +151,7 @@ export class CpOrdersComponent implements OnInit {
 
   private formOrderMoipBuilder(): void {
     this.orderMoipForm = this.fb.group({
-      Customer_id: [''],
+      customer_id: [''],
       item_product: ['', Validators.required],
       item_quantity: [1],
       item_description: ['', Validators.required],

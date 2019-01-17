@@ -16,8 +16,8 @@ export class Clientserviceorder {
   advance_payment: string;
   advance_payment_value: string;
   status: string;
-  Clientcust: Clientcust;
-  Clientcust_id: number;
+  clientcust: Clientcust;
+  clientcust_id: number;
   created_at: string;
   updated_at: string;
 }

@@ -58,7 +58,7 @@ export class SearchService {
     return this.http.get(url).pipe(
       tap((orders: Order) => {
         return orders;
-        console.log('Loaded Order');
+        console.log('Loaded order');
       }),
       catchError(this.handleError)
     );

@@ -1,9 +1,9 @@
 <nav class="navbar navbar-light bg-dark fixed-top">
   <a class="navbar-brand" routerLink="">
-    <img *ngIf="comp_logo.indexOf('../../../') !== 0" class="top-logo" src="data:image/png;base64,{{comp_logo}}"
+    <img *ngIf="current_user.company.company_logo !== 'default'" class="top-logo" src="data:image/png;base64,{{comp_logo}}"
          width="{{logo_sizeW}}" height="{{logo_sizeH}}">
-    <img *ngIf="comp_logo.indexOf('../../../') === 0" class="top-logo" src="{{comp_logo}}" width="{{logo_sizeW}}" height="{{logo_sizeH}}">
-    <b style="color: white"> {{current_user.Company.fantasy_name}}</b>
+    <img *ngIf="current_user.company.company_logo === 'default'" class="top-logo" src="../../../assets/LOGO_PRIMUM_WHITE.png" width="{{logo_sizeW}}" height="{{logo_sizeH}}">
+    <b style="color: white"> {{current_user.company.fantasy_name}}</b>
   </a>
   <div class="btn-group">
     <div class="btn-group dropleft" role="group">
@@ -17,9 +17,9 @@
         <a class="dropdown-item" (click)="open(details, {size: 'lg'})">Opções</a>
         <a class="dropdown-item" style="cursor: pointer;" (click)="signOut()">Sair</a>
         <div class="dropdown-divider"></div>
-        <a *ngIf="current_user.Company.Role.SubscriptionType == 'ADMIN_PRIMUM'" class="dropdown-item"
+        <a *ngIf="current_user.company.role.SubscriptionType == 'ADMIN_PRIMUM'" class="dropdown-item"
            routerLink="/control">Painel de Controle</a>
-        <a *ngIf="current_user.Company.Role.SubscriptionType != ('active' || 'Activated')"
+        <a *ngIf="current_user.company.role.SubscriptionType != ('active' || 'Activated')"
            class="dropdown-item clickable" (click)="open(aboutSystemContent)">Sobre o meu sistema?</a>
       </div>
     </div>
@@ -102,12 +102,12 @@
                 <hr>
                 <p>
                   <b>Descrição: </b><br>
-                  <small>{{user.Company.Role.details}}</small>
+                  <small>{{user.company.role.details}}</small>
                 </p>
-                <p *ngIf="user.Company.Role.price">
-                  Valor: R$ {{ toMoney(user.Company.Role.price)}}
+                <p *ngIf="user.company.role.price">
+                  Valor: R$ {{ toMoney(user.company.role.price)}}
                 </p>
-                <p *ngIf="!user.Company.Role.price">
+                <p *ngIf="!user.company.role.price">
                   Valor: Não tem valor de assinatura!
                 </p>
                 <hr>
@@ -117,7 +117,7 @@
               </button>
             </div>
           </div> <!-- User information! -->
-          <div class="col-8"> <!-- Company information! -->
+          <div class="col-8"> <!-- company information! -->
             <div>
               <h6 align="center"> Empresa
                 <small>(Company)</small>
@@ -174,36 +174,36 @@
                 <small>(MOIP)</small>
               </h6>
               <hr>
-              <div class="form-row" *ngIf="user.Company.Customer">
+              <div class="form-row" *ngIf="user.company.customer">
 
                 <div class="form-group col-md-6">
                   <label> Nome: </label>
-                  <input class="form-control col-md-12" type="text" value="{{user.Company.Customer.fullname}}" readonly>
+                  <input class="form-control col-md-12" type="text" value="{{user.company.customer.fullname}}" readonly>
                 </div>
 
                 <div class="form-group col-md-6">
                   <label> Contato: </label>
                   <input class="form-control col-md-12" type="text"
-                         value="({{user.Company.Customer.phonecode}}) {{user.Company.Customer.phonenumber}}" readonly>
+                         value="({{user.company.customer.phonecode}}) {{user.company.customer.phonenumber}}" readonly>
                 </div>
 
                 <div class="form-group col-md-6">
                   <label> CPF: </label>
                   <input class="form-control col-md-12" type="text"
-                         value="{{user.Company.Customer.cpf | mask: '000.000.000-00'}}" readonly>
+                         value="{{user.company.customer.cpf | mask: '000.000.000-00'}}" readonly>
                 </div>
 
                 <div class="form-group col-md-6">
                   <label> Aniversario! </label>
                   <input class="form-control col-md-12" type="text"
-                         value="{{dateChange(user.Company.Customer.birthdate, 'toHTML') | mask: '00/00/0000'}}"
+                         value="{{dateChange(user.company.customer.birthdate, 'toHTML') | mask: '00/00/0000'}}"
                          readonly>
                 </div>
 
                 <div class="form-group col-md-12">
                   <label> MOIP_ID! </label>
                   <input class="form-control col-md-12" type="text"
-                         value="{{user.Company.Customer.moip_id}}" readonly>
+                         value="{{user.company.customer.moip_id}}" readonly>
                 </div>
 
               </div>

@@ -33,7 +33,7 @@ export class NotAuthenticatedGuard implements CanActivate {
   async checkLogin(): Promise<boolean> {
     // await this.userData();
     try {
-      // const user_role = this.current_user.Company.Role.SubscriptionType;
+      // const user_role = this.current_user.company.role.SubscriptionType;
       if (!this.authService.isSignedIn()) {
         return true;
       } else {

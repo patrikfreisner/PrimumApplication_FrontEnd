@@ -47,7 +47,7 @@
           #OS{{so.id}}
         </td>
         <td>
-          {{so.Clientcust.name}} {{so.Clientcust.lastname}}
+          {{so.clientcust.name}} {{so.clientcust.lastname}}
         </td>
         <td>
           {{so.devicetype}}
@@ -63,7 +63,7 @@
         </td>
         <td>
           <button class="btn btn-dark"
-                  (click)="getCustomerById(so.Clientcust.id,null);getSObyId(so.id,null, true);openModal(detailsModal, 'lg');">
+                  (click)="getCustomerById(so.clientcust.id,null);getSObyId(so.id,null, true);openModal(detailsModal, 'lg');">
             Detalhes!
           </button>
         </td>
@@ -99,12 +99,12 @@
           <div class="form-group col-md-6">
             <label> Nome: </label>
             <input class="form-control col-md-12" type="text"
-                   value="{{ service_order.Clientcust.name }} {{service_order.Clientcust.lastname}}" readonly>
+                   value="{{ service_order.clientcust.name }} {{service_order.clientcust.lastname}}" readonly>
           </div>
           <div class="form-group col-md-6">
             <label> CPF: </label>
             <input class="form-control col-md-12" type="text"
-                   value="{{service_order.Clientcust.cpf | mask:'000.000.000-00'}}" readonly>
+                   value="{{service_order.clientcust.cpf | mask:'000.000.000-00'}}" readonly>
           </div>
           <div class="form-group col-md-6">
             <label> Tipo do aparelho: </label>
@@ -363,14 +363,15 @@
               <tbody>
               <tr>
                 <td style="border: 1px solid;padding: 1px 5px;">
-                  <img *ngIf="comp_logo.indexOf('../../../') !== 0" class="top-logo" src="data:image/png;base64,{{comp_logo}}" width="100" width="100">
-                  <img *ngIf="comp_logo.indexOf('../../../') === 0" class="top-logo" src="{{comp_logo}}" width="100" width="100">
+                  <img *ngIf="current_user.company.company_logo !== 'default'" class="top-logo" src="data:image/png;base64,{{comp_logo}}" width="100" width="100">
+                  <img *ngIf="current_user.company.company_logo === 'default'" class="top-logo" src="../../../assets/LOGO_PRIMUM_BLACK.png" width="100" width="100">
                 </td>
                 <td style="border: 1px solid;padding: 1px 5px;">
-                  <p style="text-transform: uppercase; font-size: 24px;"><b>{{current_user.Company.fantasy_name}}</b>
+                  <p style="text-transform: uppercase; font-size: 24px;"><b>{{current_user.company.fantasy_name}}</b>
                   </p>
                   <p style="text-align: center;">
-                    &nbsp;{{current_user.Company.company_phone | mask: '(00) 000000000' || 'Sem numero cadastrado'}} | {{current_user.name}}
+                    &nbsp;{{current_user.company.company_phone | mask: '(00) 000000000' || 'Sem numero cadastrado'}} |
+                    {{current_user.name}}
                   </p>
                   <p style="text-transform: uppercase;">
                     <strong>
@@ -580,7 +581,7 @@
               <tbody>
               <tr>
                 <td style="padding: 1px 5px; text-align: center;">
-                  {{current_user.Company.Customer.city}}, {{dayToday}} de {{monthToday}} de {{yearToday}}.
+                  {{current_user.company.customer.city}}, {{dayToday}} de {{monthToday}} de {{yearToday}}.
                 </td>
               </tr>
               </tbody>
@@ -616,7 +617,7 @@
                     style="border-top: 1px solid; padding: 1px 5px;text-align: center;text-transform: capitalize;">
                   {{current_user.name}}
                   <br>
-                  <span style="font-size: 11px;text-transform: uppercase;">{{current_user.Company.fantasy_name}}</span>
+                  <span style="font-size: 11px;text-transform: uppercase;">{{current_user.company.fantasy_name}}</span>
                 </td>
                 <td width="10"></td>
                 <td width="200" style="border-top: 1px solid; padding: 1px 5px;text-align: center;
@@ -705,7 +706,7 @@
                     style="border-top: 1px solid; padding: 1px 5px;text-align: center;text-transform: capitalize;">
                   {{current_user.name}}
                   <br>
-                  <span style="font-size: 11px;text-transform: uppercase;">{{current_user.Company.fantasy_name}}</span>
+                  <span style="font-size: 11px;text-transform: uppercase;">{{current_user.company.fantasy_name}}</span>
                 </td>
                 <td width="10"></td>
                 <td width="200" style="border-top: 1px solid; padding: 1px 5px;text-align: center;

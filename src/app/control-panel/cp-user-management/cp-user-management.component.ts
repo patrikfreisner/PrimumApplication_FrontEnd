@@ -83,9 +83,9 @@ export class CpUserManagementComponent implements OnInit {
       (user) => {
         this.user = user;
 
-        this.roleId = user.Company.Role.id;
+        this.roleId = user.company.role.id;
 
-        this.compForm.patchValue(user.Company);
+        this.compForm.patchValue(user.company);
 
         if (!(content == null)) {
           this.choosedCustomer = 0;
@@ -124,7 +124,7 @@ export class CpUserManagementComponent implements OnInit {
 
   public setRole(comp: Company, content): void {
     if (!(content == null)) {
-      this.choosedRole = comp.Role.id;
+      this.choosedRole = comp.role.id;
       this.modalService.open(content, {size: 'lg'});
     }
 
@@ -151,7 +151,7 @@ export class CpUserManagementComponent implements OnInit {
 
   public updateCompanyMoip(): void {
 
-    this.company.Customer_id = this.choosedCustomer;
+    this.company.customer_id = this.choosedCustomer;
 
     this.companiesService.updateCompany(this.company).subscribe(
       () => {
@@ -170,10 +170,10 @@ export class CpUserManagementComponent implements OnInit {
 
     if (source === 'upd') {
       company = this.compForm.value;
-      company.Role_id = this.roleId;
+      company.role_id = this.roleId;
     } else {
 
-      this.company.Role_id = this.choosedRole;
+      this.company.role_id = this.choosedRole;
       company = {
         cnpj: this.company.cnpj,
         fantasy_name: this.company.fantasy_name,
@@ -182,8 +182,8 @@ export class CpUserManagementComponent implements OnInit {
         foundation_date: this.company.foundation_date,
         company_subject: this.company.company_subject,
         company_phone: this.company.company_phone,
-        Customer_id: this.company.Customer_id,
-        Role_id: this.company.Role_id,
+        customer_id: this.company.customer_id,
+        role_id: this.company.role_id,
         id: this.company.id,
       };
     }

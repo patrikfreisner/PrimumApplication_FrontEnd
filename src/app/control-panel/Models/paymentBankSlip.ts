@@ -5,8 +5,8 @@ export class PaymentBankSlip {
   paid: boolean;
   bank_slip_href: string;
   moip_id: string;
-  Order: Order;
-  Order_id: number;
+  order: Order;
+  order_id: number;
   created_at: string;
   updated_at: string;
   id?: number;

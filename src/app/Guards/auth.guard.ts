@@ -30,16 +30,16 @@ export class AuthGuard implements CanActivate {
 
   async checkLogin(): Promise<boolean> {
     await this.userData();
-    // Tratamento de problemas com usuarios sem Company associada!
+    // Tratamento de problemas com usuarios sem company associada!
     let user_role = null;
     try {
-      user_role = this.current_user.Company.Role.SubscriptionType;
+      user_role = this.current_user.company.role.SubscriptionType;
     } catch (e) {
       if (e.name === 'TypeError') {
         this.router.navigate(['/portal/signup/company']);
       }
     }
-    // Fim do tratamento de problemas com usuarios sem Company associada!
+    // Fim do tratamento de problemas com usuarios sem company associada!
 
     if (this.authService.isSignedIn() && (user_role !== 'user_not_activated_yet' && user_role !== 'user_not_active')) {
       return true;

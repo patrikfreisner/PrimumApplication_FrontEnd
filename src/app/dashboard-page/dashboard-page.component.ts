@@ -39,7 +39,7 @@ export class DashboardPageComponent implements OnInit, OnChanges {
 
   public check() {
     try {
-      if (this.userdata.Company.fantasy_name != null) {
+      if (this.userdata.company.fantasy_name != null) {
         setTimeout(() => {
           this.loaded = true;
         }, 1500);

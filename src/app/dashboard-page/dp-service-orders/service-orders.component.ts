@@ -69,8 +69,8 @@ export class ServiceOrdersComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.current_user.Company.company_logo !== null) {
-      this.comp_logo = this.current_user.Company.company_logo;
+    if (this.current_user.company.company_logo !== 'default') {
+      this.comp_logo = this.current_user.company.company_logo;
     }
   }
 
@@ -128,7 +128,7 @@ export class ServiceOrdersComponent implements OnInit {
     return await this.authService.getCurrentUserData().then(
       (user) => {
         this.current_user = user;
-        this.comp_logo = user.Company.company_logo;
+        this.comp_logo = user.company.company_logo;
       }
     );
   }
@@ -190,7 +190,7 @@ export class ServiceOrdersComponent implements OnInit {
 
   private addNew(): void {
     this.service_order = this.soForm.value;
-    this.service_order.Clientcust_id = this.clientcust.id;
+    this.service_order.clientcust_id = this.clientcust.id;
     this.service_order.order_init_date = new Date().toLocaleDateString('latn');
     this.service_order.status = 'Em aberto';
 
@@ -228,7 +228,6 @@ export class ServiceOrdersComponent implements OnInit {
 
   private formServiceOrderBuilder(): void {
     this.soForm = this.fb.group({
-      id: '',
       devicetype: ['', Validators.required],
       brand: ['', Validators.required],
       model: ['', Validators.required],
@@ -242,7 +241,8 @@ export class ServiceOrdersComponent implements OnInit {
       comments: [''],
       advance_payment: [''],
       advance_payment_value: [''],
-      status: ['']
+      status: [''],
+      id: ['']
     });
   }
 

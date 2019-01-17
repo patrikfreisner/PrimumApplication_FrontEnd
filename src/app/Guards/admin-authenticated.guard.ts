@@ -27,7 +27,7 @@ export class AdminAuthenticatedGuard implements CanActivate {
   }
 
   async checkLogin(): Promise<boolean> {
-    const user_role = this.current_user.Company.Role.SubscriptionType;
+    const user_role = this.current_user.company.role.SubscriptionType;
     try {
       if (this.authService.isSignedIn() && (user_role === 'ADMIN_PRIMUM')) {
         return true;

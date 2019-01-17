@@ -69,29 +69,29 @@ export class NavbarComponent implements OnInit {
     this.current_user = this.userdata;
     this.user = this.userdata;
     this.IsEditable = false;
-    this.compForm.patchValue(this.userdata.Company);
-    this.roleId = this.userdata.Company.Role_id;
+    this.compForm.patchValue(this.userdata.company);
+    this.roleId = this.userdata.company.role_id;
     this.roles = [];
-    this.roles.push(this.userdata.Company.Role);
+    this.roles.push(this.userdata.company.role);
     this.verified = false;
     this.notVerified = '';
-    this.imageSrc = this.current_user.Company.company_logo;
+    this.imageSrc = this.current_user.company.company_logo;
     this.imageForm = this.fb.group({
       imageData: [''],
       logo_size: [''],
     });
-    if (this.current_user.Company.company_logo !== null) {
-      this.comp_logo = this.current_user.Company.company_logo;
+    if (this.current_user.company.company_logo !== 'default') {
+      this.comp_logo = this.current_user.company.company_logo;
     }
 
-    this.comp_size_number = this.userdata.Company.logo_size;
+    this.comp_size_number = this.userdata.company.logo_size;
     // this.userData();
 
 
-    if (this.userdata.Company.logo_size === '3030') {
+    if (this.userdata.company.logo_size === '3030') {
       this.logo_sizeH = 30;
       this.logo_sizeW = 30;
-    } else if (this.userdata.Company.logo_size === '3060') {
+    } else if (this.userdata.company.logo_size === '3060') {
       this.logo_sizeH = 30;
       this.logo_sizeW = 60;
     }
@@ -125,18 +125,18 @@ export class NavbarComponent implements OnInit {
     let company: any;
 
     company = {
-      cnpj: this.current_user.Company.cnpj,
-      fantasy_name: this.current_user.Company.fantasy_name,
-      company_name: this.current_user.Company.company_name,
-      responsable: this.current_user.Company.responsable,
-      foundation_date: this.current_user.Company.foundation_date,
-      company_subject: this.current_user.Company.company_subject,
-      company_phone: this.current_user.Company.company_phone,
+      cnpj: this.current_user.company.cnpj,
+      fantasy_name: this.current_user.company.fantasy_name,
+      company_name: this.current_user.company.company_name,
+      responsable: this.current_user.company.responsable,
+      foundation_date: this.current_user.company.foundation_date,
+      company_subject: this.current_user.company.company_subject,
+      company_phone: this.current_user.company.company_phone,
       company_logo: this.imageSrc,
       logo_size: this.imageForm.get('logo_size').value,
-      Customer_id: this.current_user.Company.Customer_id,
-      Role_id: this.current_user.Company.Role_id,
-      id: this.current_user.Company.id,
+      Customer_id: this.current_user.company.customer_id,
+      Role_id: this.current_user.company.role_id,
+      id: this.current_user.company.id,
     };
 
 
@@ -151,7 +151,7 @@ export class NavbarComponent implements OnInit {
   }
 
   open(content, options: {}) {
-    this.imageForm.patchValue({logo_size: this.userdata.Company.logo_size});
+    this.imageForm.patchValue({logo_size: this.userdata.company.logo_size});
     this.formPasswordChangeBuilder();
     this.notVerified = '';
     this.verified = false;

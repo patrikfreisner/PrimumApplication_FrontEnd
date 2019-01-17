@@ -30,10 +30,10 @@ export class UnregisteredCompanyGuard implements CanActivate {
 
   async checkLogin(): Promise<boolean> {
     await this.userData();
-    // Tratamento de problemas com usuarios sem Company associada!
+    // Tratamento de problemas com usuarios sem company associada!
     let user_role = null;
     try {
-      user_role = this.current_user.Company;
+      user_role = this.current_user.company;
       if (this.authService.isSignedIn() && user_role === undefined) {
         return true;
       } else {
@@ -46,7 +46,7 @@ export class UnregisteredCompanyGuard implements CanActivate {
         return false;
       }
     }
-    // Fim do tratamento de problemas com usuarios sem Company associada!
+    // Fim do tratamento de problemas com usuarios sem company associada!
   }
 
   async userData(): Promise<void> {

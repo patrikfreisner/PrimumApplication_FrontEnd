@@ -9,10 +9,10 @@ export class Company {
     foundation_date: string;
     company_subject: string;
     company_phone: string;
-    Role: Role;
-    Customer: Customer;
-    Customer_id: number;
-    Role_id: number;
+    role: Role;
+    customer: Customer;
+    customer_id: number;
+    role_id: number;
     company_logo: string;
     logo_size: string;
     created_at?: string;

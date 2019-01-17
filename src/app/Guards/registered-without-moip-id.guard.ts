@@ -30,10 +30,10 @@ export class RegisteredWithoutMoipIDGuard implements CanActivate {
 
   async checkLogin(): Promise<boolean> {
     await this.userData();
-    // Tratamento de problemas com usuarios sem Company associada!
+    // Tratamento de problemas com usuarios sem company associada!
     let user_role = null;
     try {
-      user_role = this.current_user.Company.Role.SubscriptionType;
+      user_role = this.current_user.company.role.SubscriptionType;
       if (this.authService.isSignedIn() && (user_role === 'user_not_activated_yet')) {
         return true;
       } else {
@@ -46,7 +46,7 @@ export class RegisteredWithoutMoipIDGuard implements CanActivate {
         return false;
       }
     }
-    // Fim do tratamento de problemas com usuarios sem Company associada!
+    // Fim do tratamento de problemas com usuarios sem company associada!
   }
 
   async userData(): Promise<void> {

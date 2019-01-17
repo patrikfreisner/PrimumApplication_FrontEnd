@@ -33,31 +33,31 @@
                   {{user.name}}
                 </td>
                 <td>
-                  {{user.Company.fantasy_name}}
+                  {{user.company.fantasy_name}}
                 </td>
                 <td>
-                  {{user.Company.company_phone | mask: '(00) 00000-0000'}}
+                  {{user.company.company_phone | mask: '(00) 00000-0000'}}
                 </td>
                 <td>
                   <button class="btn btn-default btn-dark col-12"
-                          *ngIf="!user.Company.Customer"
-                          (click)="setCompany(user.Company, chooseCustomer);">
+                          *ngIf="!user.company.customer"
+                          (click)="setCompany(user.company, chooseCustomer);">
                     Casdastrar Pagamento(Moip)!
                   </button>
                   <button class="btn btn-default btn-outline-dark col-12"
-                          *ngIf="user.Company.Customer">
+                          *ngIf="user.company.customer">
                     Pagamento(Moip) cadastrado!
                   </button>
                 </td>
 
                 <td>
                   <button class="btn btn-default btn-dark col-12"
-                          *ngIf="user.Company.Role_id === 2"
-                          (click)="setRole(user.Company, chooseRole);"> Cadastrar assinatura! (ROLE)
+                          *ngIf="user.company.role_id === 2"
+                          (click)="setRole(user.company, chooseRole);"> Cadastrar assinatura! (ROLE)
                   </button>
                   <button class="btn btn-default btn-dark col-12"
-                          *ngIf="user.Company.Role_id !== 2"
-                          (click)="setRole(user.Company, chooseRole);"> Assinatura(ROLE) cadastrada!
+                          *ngIf="user.company.role_id !== 2"
+                          (click)="setRole(user.company, chooseRole);"> Assinatura(ROLE) cadastrada!
                   </button>
                 </td>
                 <!--<td>-->
@@ -121,20 +121,20 @@
                   <small>{{user.email}}</small>
                 </td>
                 <td>
-                  <p *ngIf="user.Company">{{user.Company.fantasy_name}}</p>
-                  <p *ngIf="!user.Company">Não tem empresa cadastrada!</p>
+                  <p *ngIf="user.company">{{user.company.fantasy_name}}</p>
+                  <p *ngIf="!user.company">Não tem empresa cadastrada!</p>
                 </td>
-                <td *ngIf="!user.Company">
+                <td *ngIf="!user.company">
                 </td>
-                <td *ngIf="user.Company">
-                  <p *ngIf="user.Company.Customer">{{user.Company.Customer.moip_id}}</p>
-                  <p *ngIf="!user.Company.Customer">Não tem pagamento cadastrado!</p>
+                <td *ngIf="user.company">
+                  <p *ngIf="user.company.customer">{{user.company.customer.moip_id}}</p>
+                  <p *ngIf="!user.company.customer">Não tem pagamento cadastrado!</p>
                 </td>
                 <td>
-                  <p *ngIf="user.Company">
-                    <small>{{user.Company.Role.details}}</small>
+                  <p *ngIf="user.company">
+                    <small>{{user.company.role.details}}</small>
                   </p>
-                  <p *ngIf="!user.Company">NÃO CADASTRADO!</p>
+                  <p *ngIf="!user.company">NÃO CADASTRADO!</p>
                 </td>
                 <td>
                   <button class="btn btn-default btn-dark col-12"
@@ -281,8 +281,8 @@
     <h4 class="modal-title" id="modal-details-details" *ngIf="!IsEditable">Informações do Cliente!</h4>
     <h4 class="modal-title" id="modal-details-details2" *ngIf="IsEditable">Editar cliente!</h4>
 
-    <img *ngIf="user.Company.company_logo.indexOf('../../../') !== 0" class="img-thumbnail"
-         src="data:image/png;base64,{{user.Company.company_logo}}"
+    <img *ngIf="user.company.company_logo !== 'default'" class="img-thumbnail"
+         src="data:image/png;base64,{{user.company.company_logo}}"
          width="80" height="50" style="margin-left: 10px;">
 
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
@@ -331,12 +331,12 @@
                 <hr>
                 <p>
                   <b>Descrição: </b><br>
-                  <small>{{user.Company.Role.details}}</small>
+                  <small>{{user.company.role.details}}</small>
                 </p>
-                <p *ngIf="user.Company.Role.price">
-                  Valor: R$ {{ toMoney(user.Company.Role.price)}}
+                <p *ngIf="user.company.role.price">
+                  Valor: R$ {{ toMoney(user.company.role.price)}}
                 </p>
-                <p *ngIf="!user.Company.Role.price">
+                <p *ngIf="!user.company.role.price">
                   Valor: Não tem valor de assinatura!
                 </p>
                 <hr>
@@ -358,7 +358,7 @@
               <!--</div>-->
             </div>
           </div> <!-- User information! -->
-          <div class="col-8"> <!-- Company information! -->
+          <div class="col-8"> <!-- company information! -->
             <div>
               <h6 align="center"> Empresa
                 <small>(Company)</small>
@@ -415,36 +415,36 @@
                 <small>(MOIP)</small>
               </h6>
               <hr>
-              <div class="form-row" *ngIf="user.Company.Customer">
+              <div class="form-row" *ngIf="user.company.customer">
 
                 <div class="form-group col-md-6">
                   <label> Nome: </label>
-                  <input class="form-control col-md-12" type="text" value="{{user.Company.Customer.fullname}}" readonly>
+                  <input class="form-control col-md-12" type="text" value="{{user.company.customer.fullname}}" readonly>
                 </div>
 
                 <div class="form-group col-md-6">
                   <label> Contato: </label>
                   <input class="form-control col-md-12" type="text"
-                         value="({{user.Company.Customer.phonecode}}) {{user.Company.Customer.phonenumber}}" readonly>
+                         value="({{user.company.customer.phonecode}}) {{user.company.customer.phonenumber}}" readonly>
                 </div>
 
                 <div class="form-group col-md-6">
                   <label> CPF: </label>
                   <input class="form-control col-md-12" type="text"
-                         value="{{user.Company.Customer.cpf | mask: '000.000.000-00'}}" readonly>
+                         value="{{user.company.customer.cpf | mask: '000.000.000-00'}}" readonly>
                 </div>
 
                 <div class="form-group col-md-6">
                   <label> Aniversario! </label>
                   <input class="form-control col-md-12" type="text"
-                         value="{{dateChange(user.Company.Customer.birthdate, 'toHTML') | mask: '00/00/0000'}}"
+                         value="{{dateChange(user.company.customer.birthdate, 'toHTML') | mask: '00/00/0000'}}"
                          readonly>
                 </div>
 
                 <div class="form-group col-md-12">
                   <label> MOIP_ID! </label>
                   <input class="form-control col-md-12" type="text"
-                         value="{{user.Company.Customer.moip_id}}" readonly>
+                         value="{{user.company.customer.moip_id}}" readonly>
                 </div>
 
               </div>

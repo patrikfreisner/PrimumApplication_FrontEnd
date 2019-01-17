@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {Angular2TokenService} from 'angular2-token';
-import {HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +12,7 @@ export class AppComponent {
     private tokenService: Angular2TokenService
   ) {
     this.tokenService.init({
-      apiBase: 'http://localhost:3000',
-      // apiBase: 'http://192.168.0.101:3000/',
+      apiBase: 'http://178.128.79.84:3000',
       globalOptions: {
         headers: {
           'content-type': 'application/json',

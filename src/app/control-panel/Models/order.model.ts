@@ -8,9 +8,9 @@ export class Order {
   item_quantity: string;
   item_price: string;
   moip_id: string;
-  Customer_id: number;
+  customer_id: number;
   created_at: string;
   updated_at: string;
-  Customer: Customer;
-  PaymentBankSlip: PaymentBankSlip;
+  customer: Customer;
+  payment_bank_slip: PaymentBankSlip;
 }

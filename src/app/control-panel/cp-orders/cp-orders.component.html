@@ -36,7 +36,7 @@
                   {{order.moip_id}}
                 </td>
                 <td>
-                  {{order.Customer.fullname}}
+                  {{order.customer.fullname}}
                 </td>
                 <td>
                   {{order.item_description}}
@@ -44,19 +44,20 @@
                 <td>
                   R${{ toMoney(order.item_price) }}
                 </td>
-                <td *ngIf="order.PaymentBankSlip">
-                  <p *ngIf="order.PaymentBankSlip.paid == false">{{dateChange(order.PaymentBankSlip.expirationdate, 'toHTML')}}</p>
-                  <p *ngIf="order.PaymentBankSlip.paid == true">PAGO</p>
+                <td *ngIf="order.payment_bank_slip">
+                  <p *ngIf="order.payment_bank_slip.paid == false">{{dateChange(order.payment_bank_slip.expirationdate,
+                    'toHTML')}}</p>
+                  <p *ngIf="order.payment_bank_slip.paid == true">PAGO</p>
                 </td>
-                <td *ngIf="!order.PaymentBankSlip">
+                <td *ngIf="!order.payment_bank_slip">
                   Não foi gerado cobraça!
                 </td>
-                <td *ngIf="!order.PaymentBankSlip">
+                <td *ngIf="!order.payment_bank_slip">
                   <button  class="btn btn-default btn-dark col-12"
                           (click)="getMoipOrder(order.id, modalGetOrder)"> Detalhes / Criar pagamento!
                   </button>
                 </td>
-                <td *ngIf="order.PaymentBankSlip">
+                <td *ngIf="order.payment_bank_slip">
                   <button class="btn btn-default btn-dark col-12"
                           (click)="getMoipOrder(order.id, modalGetOrder)"> Detalhes
                   </button>
@@ -131,7 +132,7 @@
   </ngb-tabset>
 </div>
 
-<!-- Modal detalhes Order -->
+<!-- Modal detalhes order -->
 <ng-template #modalGetOrder let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-order-discovery">Ordem de pagamento #{{ order.id }}</h4>
@@ -147,14 +148,14 @@
           <input align="center" class="form-control" id="moip" value="{{ order.moip_id }}" readonly>
         </div>
 
-        <div class="form-group col-md-12" *ngIf="order.PaymentBankSlip">
+        <div class="form-group col-md-12" *ngIf="order.payment_bank_slip">
           <label for="moippay">ID para pagamento MOIP</label>
-          <input align="center" class="form-control" id="moippay" value="{{ order.PaymentBankSlip.moip_id }}" readonly>
+          <input align="center" class="form-control" id="moippay" value="{{ order.payment_bank_slip.moip_id }}" readonly>
         </div>
 
         <div class="form-group col-md-6">
           <label for="custex">Cliente</label>
-          <input class="form-control" id="custex" value="{{ order.Customer.fullname}}" readonly>
+          <input class="form-control" id="custex" value="{{ order.customer.fullname}}" readonly>
         </div>
 
         <div class="form-group col-md-6">
@@ -176,8 +177,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="!order.PaymentBankSlip" type="button" class="btn btn-outline-dark col-6" (click)="getMoipOrder(order.id, modalCreatePayment) ;this.modal.close()">Emitir boleto do pedido</button>
-    <a *ngIf="order.PaymentBankSlip && !order.PaymentBankSlip.paid" target="_blank" href="{{order.PaymentBankSlip.bank_slip_href}}" class="btn btn-outline-dark col-6">Visualizar boleto</a>
+    <button *ngIf="!order.payment_bank_slip" type="button" class="btn btn-outline-dark col-6" (click)="getMoipOrder(order.id, modalCreatePayment) ;this.modal.close()">Emitir boleto do pedido</button>
+    <a *ngIf="order.payment_bank_slip && !order.payment_bank_slip.paid" target="_blank" href="{{order.payment_bank_slip.bank_slip_href}}" class="btn btn-outline-dark col-6">Visualizar boleto</a>
     <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
   </div>
 </ng-template>
@@ -196,7 +197,7 @@
           ID da Ordem de pagamento: <b>{{ order.moip_id }}</b>
         </p>
         <p>
-          Nome do cliente: <b>{{ order.Customer.fullname }}</b>
+          Nome do cliente: <b>{{ order.customer.fullname }}</b>
         </p>
         <p>
           Tipo do produto: {{order.item_product}}
@@ -217,7 +218,7 @@
     <button type="button" class="btn btn-outline-dark col-3" (click)="this.modal.close()">Fechar</button>
   </div>
 </ng-template>
-<!-- Modal Create Order -->
+<!-- Modal Create order -->
 <ng-template #modalCreateOrder let-modal>
   <div class="modal-header">
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
